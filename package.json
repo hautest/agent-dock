@@ -2,7 +2,9 @@
   "name": "agent-dock",
   "private": true,
   "version": "0.1.0",
+  "description": "claude code agent view gui editor",
   "type": "module",
+  "packageManager": "pnpm@11.7.0",
   "scripts": {
     "dev": "vite",
     "typecheck": "tsc --noEmit",
@@ -15,6 +17,7 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@types/node": "^24.0.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.6.0",
