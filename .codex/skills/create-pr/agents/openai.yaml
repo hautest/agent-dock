@@ -1,0 +1,4 @@
+interface:
+  display_name: "PR 만들기"
+  short_description: "리뷰 체크포인트가 있는 PR 작성"
+  default_prompt: "$create-pr를 사용해서 리뷰 필요 항목과 사용자 컨펌 필요 항목이 포함된 PR을 만들어줘."
