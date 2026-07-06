@@ -6,18 +6,20 @@ Frontend 변경 후 가능한 경우 다음을 실행한다.
 
 ```bash
 pnpm typecheck
-pnpm lint
 pnpm build
 ```
+
+`pnpm lint`는 lint 설정과 package script가 추가된 뒤 검증 목록에 포함한다.
 
 ## Rust 검증
 
 Rust 변경 후 가능한 경우 다음을 실행한다.
 
 ```bash
-cargo fmt
+cd src-tauri
+cargo fmt --check
 cargo check
-cargo clippy
+cargo clippy -- -D warnings
 cargo test
 ```
 
