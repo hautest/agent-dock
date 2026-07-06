@@ -8,7 +8,7 @@ AI 작업자는 기능을 구현하기 전에 반드시 이 인덱스에서 관�
 
 ## 스펙 목록
 
-아직 등록된 스펙 문서가 없다.
+* `project-setup.md`: Tauri + React + TypeScript + Vite + pnpm 기반 초기 프로젝트 세팅
 
 개발 중 새 스펙을 만들면 이 인덱스에 추가한다.
 
