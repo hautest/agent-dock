@@ -1,5 +1,19 @@
 # 검증
 
+## 런타임 준비
+
+프로젝트 루트에서 mise로 고정된 런타임을 사용한다.
+
+```bash
+mise install
+node --version
+pnpm --version
+rustc --version
+cargo --version
+```
+
+기대 버전은 Node.js `24.7.0`, pnpm `11.7.0`, Rust `1.96.0`이다.
+
 ## TypeScript 검증
 
 TypeScript 변경 후 가능한 경우 다음을 실행한다.

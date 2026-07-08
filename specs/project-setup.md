@@ -11,6 +11,7 @@
 * TypeScript lint는 oxlint로 실행한다.
 * TypeScript와 루트 설정 format은 oxfmt로 실행한다.
 * Rust lint와 format은 cargo clippy와 cargo fmt로 실행한다.
+* mise로 Node.js, pnpm, Rust 버전을 프로젝트 루트에서 정확히 고정한다.
 * 로컬에서 Tauri dev app을 실행할 수 있는 상태를 목표로 한다.
 * Frontend와 Rust backend의 기본 진입점을 만든다.
 * 기본 검증 명령을 package script와 문서에 맞춘다.
@@ -36,9 +37,19 @@
 * Rust
 * oxlint
 * oxfmt
+* mise
+
+## 런타임 버전
+
+프로젝트 루트 `.mise.toml`은 다음 버전을 정확히 고정한다.
+
+* Node.js `24.7.0`
+* pnpm `11.7.0`
+* Rust `1.96.0`
 
 ## Acceptance Criteria
 
+* mise가 프로젝트 루트에서 Node.js `24.7.0`, pnpm `11.7.0`, Rust `1.96.0`을 활성화한다.
 * pnpm 의존성이 설치된다.
 * `pnpm dev`로 Vite dev server를 실행할 수 있다.
 * `pnpm tauri dev`로 Tauri dev app을 실행할 수 있다.
@@ -48,6 +59,11 @@
 ## 검증 방법
 
 ```bash
+mise install
+node --version
+pnpm --version
+rustc --version
+cargo --version
 pnpm lint
 pnpm format:check
 pnpm typecheck
