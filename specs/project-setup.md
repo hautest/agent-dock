@@ -8,6 +8,7 @@
 
 * Tauri + React + TypeScript + Vite 기반 앱을 구성한다.
 * 패키지 매니저는 pnpm을 사용한다.
+* mise로 Node.js, pnpm, Rust 버전을 프로젝트 루트에서 정확히 고정한다.
 * 로컬에서 Tauri dev app을 실행할 수 있는 상태를 목표로 한다.
 * Frontend와 Rust backend의 기본 진입점을 만든다.
 * 기본 검증 명령을 package script와 문서에 맞춘다.
@@ -31,9 +32,19 @@
 * Vite
 * pnpm
 * Rust
+* mise
+
+## 런타임 버전
+
+프로젝트 루트 `.mise.toml`은 다음 버전을 정확히 고정한다.
+
+* Node.js `24.7.0`
+* pnpm `11.7.0`
+* Rust `1.96.0`
 
 ## Acceptance Criteria
 
+* mise가 프로젝트 루트에서 Node.js `24.7.0`, pnpm `11.7.0`, Rust `1.96.0`을 활성화한다.
 * pnpm 의존성이 설치된다.
 * `pnpm dev`로 Vite dev server를 실행할 수 있다.
 * `pnpm tauri dev`로 Tauri dev app을 실행할 수 있다.
@@ -43,6 +54,11 @@
 ## 검증 방법
 
 ```bash
+mise install
+node --version
+pnpm --version
+rustc --version
+cargo --version
 pnpm typecheck
 pnpm build
 cd src-tauri

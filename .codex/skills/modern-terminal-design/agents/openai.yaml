@@ -1,0 +1,4 @@
+interface:
+  display_name: "Modern Terminal Design"
+  short_description: "Modern dark와 terminal 감각의 UI 지침"
+  default_prompt: "Use $modern-terminal-design to design an Agent Dock UI in the project-local modern terminal style."
