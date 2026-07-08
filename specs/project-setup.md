@@ -8,6 +8,9 @@
 
 * Tauri + React + TypeScript + Vite 기반 앱을 구성한다.
 * 패키지 매니저는 pnpm을 사용한다.
+* TypeScript lint는 oxlint로 실행한다.
+* TypeScript와 루트 설정 format은 oxfmt로 실행한다.
+* Rust lint와 format은 cargo clippy와 cargo fmt로 실행한다.
 * mise로 Node.js, pnpm, Rust 버전을 프로젝트 루트에서 정확히 고정한다.
 * 로컬에서 Tauri dev app을 실행할 수 있는 상태를 목표로 한다.
 * Frontend와 Rust backend의 기본 진입점을 만든다.
@@ -32,6 +35,8 @@
 * Vite
 * pnpm
 * Rust
+* oxlint
+* oxfmt
 * mise
 
 ## 런타임 버전
@@ -48,7 +53,7 @@
 * pnpm 의존성이 설치된다.
 * `pnpm dev`로 Vite dev server를 실행할 수 있다.
 * `pnpm tauri dev`로 Tauri dev app을 실행할 수 있다.
-* `pnpm typecheck`, `pnpm build`, `cd src-tauri && cargo fmt --check`, `cd src-tauri && cargo check`가 실행 가능한 상태다.
+* `pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm build`, `cd src-tauri && cargo check`, `cd src-tauri && cargo test`가 실행 가능한 상태다.
 * 검증 명령은 `docs/validation.md`와 package scripts가 서로 일치한다.
 
 ## 검증 방법
@@ -59,11 +64,13 @@ node --version
 pnpm --version
 rustc --version
 cargo --version
+pnpm lint
+pnpm format:check
 pnpm typecheck
 pnpm build
 cd src-tauri
-cargo fmt --check
 cargo check
+cargo test
 ```
 
 가능한 경우 다음 명령으로 로컬 앱 실행까지 확인한다.

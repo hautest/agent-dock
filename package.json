@@ -7,6 +7,15 @@
   "packageManager": "pnpm@11.7.0",
   "scripts": {
     "dev": "vite",
+    "lint": "oxlint . --deny-warnings && cd src-tauri && cargo clippy -- -D warnings",
+    "lint:ts": "oxlint . --deny-warnings",
+    "lint:rust": "cd src-tauri && cargo clippy -- -D warnings",
+    "format": "oxfmt \"src/**/*.ts\" \"src/**/*.tsx\" \"src/**/*.css\" \"*.ts\" \"*.json\" \".*.json\" index.html --no-error-on-unmatched-pattern && cd src-tauri && cargo fmt",
+    "format:check": "oxfmt \"src/**/*.ts\" \"src/**/*.tsx\" \"src/**/*.css\" \"*.ts\" \"*.json\" \".*.json\" index.html --check --no-error-on-unmatched-pattern && cd src-tauri && cargo fmt --check",
+    "format:ts": "oxfmt \"src/**/*.ts\" \"src/**/*.tsx\" \"src/**/*.css\" \"*.ts\" \"*.json\" \".*.json\" index.html --no-error-on-unmatched-pattern",
+    "format:ts:check": "oxfmt \"src/**/*.ts\" \"src/**/*.tsx\" \"src/**/*.css\" \"*.ts\" \"*.json\" \".*.json\" index.html --check --no-error-on-unmatched-pattern",
+    "format:rust": "cd src-tauri && cargo fmt",
+    "format:rust:check": "cd src-tauri && cargo fmt --check",
     "typecheck": "tsc --noEmit",
     "build": "tsc && vite build",
     "preview": "vite preview",
@@ -17,12 +26,14 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@tauri-apps/cli": "^2",
     "@types/node": "^24.0.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.6.0",
+    "oxfmt": "^0.58.0",
+    "oxlint": "^1.73.0",
     "typescript": "~5.8.3",
-    "vite": "^7.0.4",
-    "@tauri-apps/cli": "^2"
+    "vite": "^7.0.4"
   }
 }

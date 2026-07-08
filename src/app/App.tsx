@@ -174,7 +174,10 @@ function App() {
             </div>
             <div className="terminal-lines">
               {logs.map((log) => (
-                <p className={log.tone ? `terminal-line ${log.tone}` : "terminal-line"} key={log.message}>
+                <p
+                  className={log.tone ? `terminal-line ${log.tone}` : "terminal-line"}
+                  key={log.message}
+                >
                   <span>{log.prefix}</span>
                   {log.message}
                 </p>

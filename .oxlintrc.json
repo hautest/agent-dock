@@ -1,0 +1,25 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "jsx-a11y", "typescript", "unicorn", "oxc"],
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {},
+  "env": {
+    "builtin": true,
+    "browser": true
+  },
+  "overrides": [
+    {
+      "files": ["*.config.js", "*.config.mjs", "*.config.cjs", "*.config.ts", "vite.config.ts"],
+      "env": {
+        "node": true
+      }
+    }
+  ],
+  "settings": {
+    "react": {
+      "version": "19.1.0"
+    }
+  }
+}

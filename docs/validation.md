@@ -14,16 +14,23 @@ cargo --version
 
 기대 버전은 Node.js `24.7.0`, pnpm `11.7.0`, Rust `1.96.0`이다.
 
-## Frontend 검증
+## TypeScript 검증
 
-Frontend 변경 후 가능한 경우 다음을 실행한다.
+TypeScript 변경 후 가능한 경우 다음을 실행한다.
 
 ```bash
+pnpm lint:ts
+pnpm format:ts:check
 pnpm typecheck
 pnpm build
 ```
 
-`pnpm lint`는 lint 설정과 package script가 추가된 뒤 검증 목록에 포함한다.
+전체 lint와 format 검증은 루트에서 다음 명령으로 실행한다.
+
+```bash
+pnpm lint
+pnpm format:check
+```
 
 ## Rust 검증
 
@@ -35,6 +42,13 @@ cargo fmt --check
 cargo check
 cargo clippy -- -D warnings
 cargo test
+```
+
+루트 package script로 실행할 때는 다음 명령을 사용할 수 있다.
+
+```bash
+pnpm lint:rust
+pnpm format:rust:check
 ```
 
 ## 실행하지 못한 경우
@@ -51,4 +65,4 @@ cargo test
 
 ## 문서 싱크
 
-검증 명령, package script, Rust lint 정책이 바뀌면 이 문서를 함께 수정한다.
+검증 명령, package script, TypeScript lint/format 도구, Rust lint 정책이 바뀌면 이 문서를 함께 수정한다.
