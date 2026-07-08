@@ -93,9 +93,9 @@ Rust backend는 다음 영역을 담당할 수 있다.
 Rust 변경 후 가능한 경우 다음을 실행한다.
 
 ```bash
-cargo fmt
+cargo fmt --check
 cargo check
-cargo clippy
+cargo clippy -- -D warnings
 cargo test
 ```
 

@@ -15,16 +15,18 @@ Claude Code agent 세션을 하나의 로컬 IDE 화면에서 관리하기 위�
 ```bash
 pnpm install
 pnpm dev
+pnpm lint
+pnpm format:check
 pnpm typecheck
 pnpm build
 pnpm tauri dev
 ```
 
-Rust 검증은 `src-tauri`에서 실행한다.
+개별 검증은 다음 명령으로 실행한다.
 
 ```bash
-cargo fmt --check
-cargo check
-cargo clippy -- -D warnings
-cargo test
+pnpm lint:frontend
+pnpm format:frontend:check
+pnpm lint:rust
+pnpm format:rust:check
 ```
