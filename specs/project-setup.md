@@ -8,8 +8,8 @@
 
 * Tauri + React + TypeScript + Vite 기반 앱을 구성한다.
 * 패키지 매니저는 pnpm을 사용한다.
-* Frontend lint는 oxlint로 실행한다.
-* Frontend와 루트 설정 format은 oxfmt로 실행한다.
+* TypeScript lint는 oxlint로 실행한다.
+* TypeScript와 루트 설정 format은 oxfmt로 실행한다.
 * Rust lint와 format은 cargo clippy와 cargo fmt로 실행한다.
 * 로컬에서 Tauri dev app을 실행할 수 있는 상태를 목표로 한다.
 * Frontend와 Rust backend의 기본 진입점을 만든다.

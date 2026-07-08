@@ -25,8 +25,8 @@ pnpm tauri dev
 개별 검증은 다음 명령으로 실행한다.
 
 ```bash
-pnpm lint:frontend
-pnpm format:frontend:check
+pnpm lint:ts
+pnpm format:ts:check
 pnpm lint:rust
 pnpm format:rust:check
 ```

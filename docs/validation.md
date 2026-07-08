@@ -1,12 +1,12 @@
 # 검증
 
-## Frontend 검증
+## TypeScript 검증
 
-Frontend 변경 후 가능한 경우 다음을 실행한다.
+TypeScript 변경 후 가능한 경우 다음을 실행한다.
 
 ```bash
-pnpm lint:frontend
-pnpm format:frontend:check
+pnpm lint:ts
+pnpm format:ts:check
 pnpm typecheck
 pnpm build
 ```
@@ -51,4 +51,4 @@ pnpm format:rust:check
 
 ## 문서 싱크
 
-검증 명령, package script, frontend lint/format 도구, Rust lint 정책이 바뀌면 이 문서를 함께 수정한다.
+검증 명령, package script, TypeScript lint/format 도구, Rust lint 정책이 바뀌면 이 문서를 함께 수정한다.

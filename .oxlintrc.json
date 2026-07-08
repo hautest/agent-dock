@@ -7,9 +7,16 @@
   "rules": {},
   "env": {
     "builtin": true,
-    "browser": true,
-    "node": true
+    "browser": true
   },
+  "overrides": [
+    {
+      "files": ["*.config.js", "*.config.mjs", "*.config.cjs", "*.config.ts", "vite.config.ts"],
+      "env": {
+        "node": true
+      }
+    }
+  ],
   "settings": {
     "react": {
       "version": "19.1.0"
