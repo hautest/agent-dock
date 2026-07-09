@@ -6,6 +6,8 @@
   "type": "module",
   "packageManager": "pnpm@11.7.0",
   "scripts": {
+    "prepare": "panda codegen",
+    "codegen": "panda codegen",
     "dev": "vite",
     "lint": "oxlint . --deny-warnings && cd src-tauri && cargo clippy -- -D warnings",
     "lint:ts": "oxlint . --deny-warnings",
@@ -16,8 +18,8 @@
     "format:ts:check": "oxfmt \"src/**/*.ts\" \"src/**/*.tsx\" \"src/**/*.css\" \"*.ts\" \"*.json\" \".*.json\" index.html --check --no-error-on-unmatched-pattern",
     "format:rust": "cd src-tauri && cargo fmt",
     "format:rust:check": "cd src-tauri && cargo fmt --check",
-    "typecheck": "tsc --noEmit",
-    "build": "tsc && vite build",
+    "typecheck": "panda codegen && tsc --noEmit",
+    "build": "panda codegen && tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri"
   },
@@ -26,6 +28,7 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@pandacss/dev": "^1.11.4",
     "@tauri-apps/cli": "^2",
     "@types/node": "^24.0.0",
     "@types/react": "^19.1.8",
@@ -33,6 +36,7 @@
     "@vitejs/plugin-react": "^4.6.0",
     "oxfmt": "^0.58.0",
     "oxlint": "^1.73.0",
+    "postcss": "^8.5.16",
     "typescript": "~5.8.3",
     "vite": "^7.0.4"
   }

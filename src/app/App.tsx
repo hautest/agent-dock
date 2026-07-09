@@ -1,3 +1,4 @@
+import { css } from "../../styled-system/css";
 import "./App.css";
 
 interface AgentSession {
@@ -63,6 +64,19 @@ const logs: LogLine[] = [
   { prefix: "09:42:29", message: "terminal pane linked to active agent", tone: "ok" },
 ];
 
+const pandaBadgeClassName = css({
+  alignItems: "center",
+  borderColor: "rgba(92, 255, 130, 0.32)",
+  borderRadius: "6px",
+  borderWidth: "1px",
+  color: "#5cff82",
+  display: "inline-flex",
+  fontFamily: "SFMono-Regular, Consolas, Liberation Mono, monospace",
+  fontSize: "0.72rem",
+  minHeight: "28px",
+  paddingInline: "10px",
+});
+
 function App() {
   return (
     <main className="app-shell">
@@ -72,6 +86,7 @@ function App() {
           <div>
             <p className="eyebrow">agent-aware local editor shell</p>
             <h1 id="workspace-title">Agent Dock</h1>
+            <span className={pandaBadgeClassName}>panda css ready</span>
           </div>
           <div className="command-pill" aria-label="current workspace path">
             <span className="prompt">$</span>
