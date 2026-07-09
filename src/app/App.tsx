@@ -1,5 +1,4 @@
-import { css } from "../../styled-system/css";
-import "./App.css";
+import { styles } from "./app.styles";
 
 interface AgentSession {
   id: string;
@@ -52,7 +51,7 @@ const sessions: AgentSession[] = [
 
 const files: FileNode[] = [
   { path: "src/app/App.tsx", state: "open" },
-  { path: "src/app/App.css", state: "dirty" },
+  { path: "src/app/app.styles.ts", state: "dirty" },
   { path: "docs/modern-terminal-design-guide.md", state: "new" },
   { path: ".codex/skills/modern-terminal-design/SKILL.md", state: "new" },
 ];
@@ -64,56 +63,42 @@ const logs: LogLine[] = [
   { prefix: "09:42:29", message: "terminal pane linked to active agent", tone: "ok" },
 ];
 
-const pandaBadgeClassName = css({
-  alignItems: "center",
-  borderColor: "rgba(92, 255, 130, 0.32)",
-  borderRadius: "6px",
-  borderWidth: "1px",
-  color: "#5cff82",
-  display: "inline-flex",
-  fontFamily: "SFMono-Regular, Consolas, Liberation Mono, monospace",
-  fontSize: "0.72rem",
-  minHeight: "28px",
-  paddingInline: "10px",
-});
-
 function App() {
   return (
-    <main className="app-shell">
-      <div className="scanline" aria-hidden="true" />
-      <section className="workspace" aria-labelledby="workspace-title">
-        <header className="topbar">
+    <main className={styles.appShell}>
+      <div className={styles.scanline} aria-hidden="true" />
+      <section className={styles.workspace} aria-labelledby="workspace-title">
+        <header className={styles.topbar}>
           <div>
-            <p className="eyebrow">agent-aware local editor shell</p>
-            <h1 id="workspace-title">Agent Dock</h1>
-            <span className={pandaBadgeClassName}>panda css ready</span>
+            <p className={styles.eyebrow}>agent-aware local editor shell</p>
+            <h1 className={styles.title} id="workspace-title">
+              Agent Dock
+            </h1>
+            <span className={styles.pandaBadge}>panda css ready</span>
           </div>
-          <div className="command-pill" aria-label="current workspace path">
-            <span className="prompt">$</span>
+          <div className={styles.commandPill} aria-label="current workspace path">
+            <span className={styles.prompt}>$</span>
             <span>~/workspace/agent-dock</span>
-            <span className="cursor" aria-hidden="true" />
+            <span className={styles.cursor} aria-hidden="true" />
           </div>
         </header>
 
-        <div className="shell-grid">
-          <aside className="panel session-panel" aria-label="agent sessions">
-            <div className="panel-header">
+        <div className={styles.shellGrid}>
+          <aside className={`${styles.panel} ${styles.clippedPanel}`} aria-label="agent sessions">
+            <div className={styles.panelHeader}>
               <span>agents</span>
-              <span className="muted">3 live</span>
+              <span className={styles.muted}>3 live</span>
             </div>
-            <div className="session-list">
+            <div className={styles.stack}>
               {sessions.map((session) => (
-                <article
-                  className={session.active ? "session-card active" : "session-card"}
-                  key={session.id}
-                >
-                  <div className="session-index">{session.id}</div>
-                  <div className="session-copy">
-                    <h2>{session.name}</h2>
-                    <p>{session.repo}</p>
-                    <span>{session.branch}</span>
+                <article className={styles.sessionCard(session.active)} key={session.id}>
+                  <div className={styles.sessionIndex}>{session.id}</div>
+                  <div>
+                    <h2 className={styles.sessionCopyTitle}>{session.name}</h2>
+                    <p className={styles.sessionCopyText}>{session.repo}</p>
+                    <span className={styles.sessionCopyText}>{session.branch}</span>
                   </div>
-                  <div className="session-meta">
+                  <div className={styles.sessionMeta}>
                     <strong>{session.status}</strong>
                     <span>{session.changes}</span>
                   </div>
@@ -122,59 +107,62 @@ function App() {
             </div>
           </aside>
 
-          <section className="panel editor-panel" aria-label="editor preview">
-            <div className="panel-header">
+          <section className={`${styles.panel} ${styles.editorPanel}`} aria-label="editor preview">
+            <div className={styles.panelHeader}>
               <span>editor</span>
-              <span className="muted">App.tsx</span>
+              <span className={styles.muted}>App.tsx</span>
             </div>
-            <div className="editor-tabs" aria-label="open tabs">
-              <span className="tab active">App.tsx</span>
-              <span className="tab">App.css</span>
-              <span className="tab">design-guide.md</span>
+            <div className={styles.editorTabs} aria-label="open tabs">
+              <span className={`${styles.tab} ${styles.tabActive}`}>App.tsx</span>
+              <span className={styles.tab}>app.styles.ts</span>
+              <span className={styles.tab}>design-tokens.md</span>
             </div>
-            <div className="code-window" aria-label="code preview">
+            <div className={styles.codeWindow} aria-label="code preview">
               <p>
-                <span className="line">01</span>
-                <span className="keyword">const</span> activeAgent =
-                <span className="string"> "claude-code/main"</span>;
+                <span className={styles.codeLineNumber}>01</span>
+                <span className={styles.keyword}>const</span> activeAgent =
+                <span className={styles.string}> "claude-code/main"</span>;
               </p>
               <p>
-                <span className="line">02</span>
+                <span className={styles.codeLineNumber}>02</span>
                 syncWorkspace(activeAgent, repo, terminal);
               </p>
               <p>
-                <span className="line">03</span>
+                <span className={styles.codeLineNumber}>03</span>
                 renderShell(
-                <span className="string">"modern-terminal"</span>);
+                <span className={styles.string}>"modern-terminal"</span>);
               </p>
               <p>
-                <span className="line">04</span>
+                <span className={styles.codeLineNumber}>04</span>
                 status.write(
-                <span className="string">"[OK] context switched"</span>);
+                <span className={styles.string}>"[OK] context switched"</span>);
               </p>
             </div>
           </section>
 
-          <aside className="panel context-panel" aria-label="workspace context">
-            <div className="panel-header">
+          <aside
+            className={`${styles.panel} ${styles.clippedPanel}`}
+            aria-label="workspace context"
+          >
+            <div className={styles.panelHeader}>
               <span>context</span>
-              <span className="status-ok">[OK]</span>
+              <span className={styles.statusOk}>[OK]</span>
             </div>
-            <div className="metric-row">
+            <div className={styles.metricRow}>
               <span>worktree</span>
               <strong>attached</strong>
             </div>
-            <div className="metric-row">
+            <div className={styles.metricRow}>
               <span>git</span>
               <strong>+12 -3</strong>
             </div>
-            <div className="metric-row">
+            <div className={styles.metricRow}>
               <span>terminal</span>
               <strong>restored</strong>
             </div>
-            <div className="file-stack">
+            <div className={styles.fileStack}>
               {files.map((file) => (
-                <div className="file-row" key={file.path}>
+                <div className={styles.fileRow} key={file.path}>
                   <span>{file.path}</span>
                   <strong>{file.state}</strong>
                 </div>
@@ -182,24 +170,24 @@ function App() {
             </div>
           </aside>
 
-          <section className="panel terminal-panel" aria-label="terminal preview">
-            <div className="panel-header">
+          <section
+            className={`${styles.panel} ${styles.terminalPanel}`}
+            aria-label="terminal preview"
+          >
+            <div className={styles.panelHeader}>
               <span>terminal</span>
-              <span className="muted">session: claude-code/main</span>
+              <span className={styles.muted}>session: claude-code/main</span>
             </div>
-            <div className="terminal-lines">
+            <div className={styles.terminalLines}>
               {logs.map((log) => (
-                <p
-                  className={log.tone ? `terminal-line ${log.tone}` : "terminal-line"}
-                  key={log.message}
-                >
+                <p className={styles.terminalLine(log.tone)} key={log.message}>
                   <span>{log.prefix}</span>
                   {log.message}
                 </p>
               ))}
-              <p className="terminal-prompt">
+              <p className={styles.terminalPrompt}>
                 <span>agent-dock %</span> pnpm build
-                <span className="cursor" aria-hidden="true" />
+                <span className={styles.cursor} aria-hidden="true" />
               </p>
             </div>
           </section>

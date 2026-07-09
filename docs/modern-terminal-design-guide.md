@@ -32,6 +32,8 @@ Agent Dock은 agent-aware local editor shell이다.
 * Terminal 액센트: `#5cff82`, `#d7ff72`
 * 위험 상태: `#ff5f7a`
 
+색상 token의 사용 상황은 `docs/design-color-tokens.md`를 따른다.
+
 ## 타이포그래피
 
 * 제품명, 주요 헤드라인은 시스템 산세리프를 사용한다.
@@ -69,5 +71,7 @@ Agent Dock은 agent-aware local editor shell이다.
 ## 적용 방식
 
 새 UI를 만들 때는 이 문서를 먼저 확인한다.
+
+색상을 적용할 때는 `docs/design-color-tokens.md`의 semantic token을 사용한다.
 
 Codex 작업자는 `.codex/skills/modern-terminal-design` 스킬을 사용해 이 디자인 기준을 구현 지침으로 변환한다.
