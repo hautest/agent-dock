@@ -9,7 +9,7 @@ AI 작업자는 기능을 구현하기 전에 반드시 이 인덱스에서 관�
 ## 스펙 목록
 
 * `project-setup.md`: Tauri + React + TypeScript + Vite + pnpm 기반 초기 프로젝트 세팅
-* `frontend-styling-system.md`: Panda CSS 기반 프론트엔드 스타일링 시스템
+* `features/20260709-frontend-styling-system.md`: Panda CSS 기반 프론트엔드 스타일링 시스템
 * `features/modern-terminal-design-skill.md`: 프로젝트 로컬 modern-terminal 디자인 스킬과 기능 없는 샘플 UI
 
 개발 중 새 스펙을 만들면 이 인덱스에 추가한다.
