@@ -56,6 +56,20 @@ Frontend 폴더는 FSD 구조로 관리한다.
 
 화면 단위는 `pages`에 둔다.
 
+## 스타일링
+
+스타일링 시스템은 Panda CSS를 사용한다.
+
+Panda CSS 설정은 프로젝트 루트 `panda.config.ts`에서 관리한다.
+
+Panda CSS layer는 `src/index.css`에서 정의하고 앱 entry에서 import한다.
+
+Panda CSS codegen 결과물은 `styled-system` 폴더에서 import한다.
+
+기존 CSS 파일은 점진적으로 유지하거나 정리할 수 있다.
+
+디자인 토큰, recipe, pattern은 별도 스펙에서 정의한 뒤 추가한다.
+
 ## 컴포넌트 분리
 
 UI를 작성할 때는 적절한 UI 단위로 컴포넌트를 나누고 파일을 분리한다.
