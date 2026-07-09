@@ -1,4 +1,4 @@
-import { styles } from "./App.styles";
+import { styles } from "./app.styles";
 
 interface AgentSession {
   id: string;
@@ -51,7 +51,7 @@ const sessions: AgentSession[] = [
 
 const files: FileNode[] = [
   { path: "src/app/App.tsx", state: "open" },
-  { path: "src/app/App.styles.ts", state: "dirty" },
+  { path: "src/app/app.styles.ts", state: "dirty" },
   { path: "docs/modern-terminal-design-guide.md", state: "new" },
   { path: ".codex/skills/modern-terminal-design/SKILL.md", state: "new" },
 ];
@@ -114,7 +114,7 @@ function App() {
             </div>
             <div className={styles.editorTabs} aria-label="open tabs">
               <span className={`${styles.tab} ${styles.tabActive}`}>App.tsx</span>
-              <span className={styles.tab}>App.styles.ts</span>
+              <span className={styles.tab}>app.styles.ts</span>
               <span className={styles.tab}>design-tokens.md</span>
             </div>
             <div className={styles.codeWindow} aria-label="code preview">

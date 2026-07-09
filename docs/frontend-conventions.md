@@ -76,6 +76,10 @@ Panda CSS JSX 컴포넌트를 직접 import해 화면 구조를 만들지 않는
 
 단일 화면 또는 단일 UI 조각의 고정 스타일은 `css`로 분리한다.
 
+스타일 전용 파일 이름은 소문자 kebab-case와 `.styles.ts` suffix를 사용한다.
+
+예시는 `app.styles.ts`, `app-panel.styles.ts`와 같다.
+
 기존 CSS 파일은 점진적으로 유지하거나 정리할 수 있다.
 
 디자인 토큰, recipe, pattern은 별도 스펙에서 정의한 뒤 추가한다.

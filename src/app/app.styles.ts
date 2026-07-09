@@ -1,6 +1,6 @@
 import { css } from "../../styled-system/css";
-import { editorTerminalStyles } from "./AppEditorTerminal.styles";
-import { panelStyles } from "./AppPanel.styles";
+import { editorTerminalStyles } from "./app-editor-terminal.styles";
+import { panelStyles } from "./app-panel.styles";
 
 const monoFont = "SFMono-Regular, Consolas, Liberation Mono, monospace";
 
