@@ -13,8 +13,39 @@ export default defineConfig({
   // Generate JSX utilities for React.
   jsxFramework: "react",
 
+  globalCss: {
+    ":root": {
+      background: "bg.canvas",
+      color: "fg.default",
+      fontFamily:
+        "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
+      fontSynthesis: "none",
+      MozOsxFontSmoothing: "grayscale",
+      textRendering: "optimizeLegibility",
+      WebkitFontSmoothing: "antialiased",
+    },
+    "*": {
+      boxSizing: "border-box",
+    },
+    body: {
+      margin: "0",
+      minHeight: "100vh",
+      minWidth: "320px",
+    },
+    "button, input, textarea, select": {
+      font: "inherit",
+    },
+  },
+
   theme: {
     extend: {
+      keyframes: {
+        blink: {
+          "50%": {
+            opacity: "0",
+          },
+        },
+      },
       tokens: {
         colors: {
           core: {

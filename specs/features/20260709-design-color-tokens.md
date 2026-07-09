@@ -8,6 +8,7 @@ Modern Terminal 디자인 가이드의 색상 기준을 Panda CSS 디자인 토�
 
 * Panda CSS `colors` primitive token을 만든다.
 * Panda CSS `colors` semantic token을 만든다.
+* 색상 token 사용 상황을 설명하는 가이드 문서를 만든다.
 * 현재 샘플 UI의 대표 색상 사용부를 semantic token 기반으로 바꾼다.
 * 색상 토큰은 `docs/modern-terminal-design-guide.md`의 색상 기준과 일치시킨다.
 
@@ -42,7 +43,8 @@ Semantic token은 UI 사용 의도를 표현한다.
 
 * `panda.config.ts`에 primitive color token이 정의된다.
 * `panda.config.ts`에 semantic color token이 정의된다.
-* 샘플 UI는 대표 색상에 semantic token을 사용한다.
+* 샘플 UI는 Panda CSS 문법으로 대표 색상에 semantic token을 사용한다.
+* `docs/design-color-tokens.md`는 색상 token의 사용 상황을 설명한다.
 * 디자인 가이드의 핵심 색상 값이 primitive token에 반영된다.
 * `pnpm lint:ts`, `pnpm format:ts:check`, `pnpm typecheck`, `pnpm build`가 통과한다.
 
