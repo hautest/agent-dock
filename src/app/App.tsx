@@ -66,10 +66,10 @@ const logs: LogLine[] = [
 
 const pandaBadgeClassName = css({
   alignItems: "center",
-  borderColor: "rgba(92, 255, 130, 0.32)",
+  borderColor: "border.success",
   borderRadius: "6px",
   borderWidth: "1px",
-  color: "#5cff82",
+  color: "status.success",
   display: "inline-flex",
   fontFamily: "SFMono-Regular, Consolas, Liberation Mono, monospace",
   fontSize: "0.72rem",

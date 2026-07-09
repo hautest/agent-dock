@@ -1,6 +1,6 @@
 :root {
-  color: #f4f7fb;
-  background: #06070a;
+  color: var(--colors-fg-default);
+  background: var(--colors-bg-canvas);
   font-family:
     Inter,
     ui-sans-serif,
@@ -38,16 +38,21 @@ select {
   overflow: hidden;
   padding: 28px;
   background:
-    radial-gradient(circle at 72% 12%, rgba(124, 124, 255, 0.22), transparent 30%),
-    radial-gradient(circle at 18% 82%, rgba(92, 255, 130, 0.12), transparent 26%),
-    linear-gradient(145deg, #06070a 0%, #0b0d12 54%, #070910 100%);
+    radial-gradient(circle at 72% 12%, var(--colors-effect-glow-primary-strong), transparent 30%),
+    radial-gradient(circle at 18% 82%, var(--colors-effect-glow-success-soft), transparent 26%),
+    linear-gradient(
+      145deg,
+      var(--colors-bg-canvas) 0%,
+      var(--colors-bg-canvas-raised) 54%,
+      var(--colors-bg-code) 100%
+    );
 }
 
 .scanline {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-image: linear-gradient(var(--colors-effect-scanline) 1px, transparent 1px);
   background-size: 100% 4px;
   opacity: 0.4;
 }
@@ -71,7 +76,7 @@ select {
 
 .eyebrow {
   margin: 0 0 8px;
-  color: #5cff82;
+  color: var(--colors-status-success);
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 0.78rem;
   letter-spacing: 0;
@@ -79,7 +84,7 @@ select {
 
 h1 {
   margin: 0;
-  color: #f8fbff;
+  color: var(--colors-fg-strong);
   font-size: clamp(3.25rem, 8vw, 7rem);
   line-height: 0.86;
 }
@@ -91,25 +96,25 @@ h1 {
   max-width: 100%;
   min-height: 44px;
   padding: 0 16px;
-  border: 1px solid rgba(92, 255, 130, 0.28);
+  border: 1px solid var(--colors-border-success);
   border-radius: 8px;
-  color: #d7ff72;
-  background: rgba(7, 10, 13, 0.7);
-  box-shadow: 0 0 34px rgba(92, 255, 130, 0.08);
+  color: var(--colors-status-warning);
+  background: var(--colors-surface-shell);
+  box-shadow: 0 0 34px var(--colors-effect-glow-success);
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   white-space: nowrap;
 }
 
 .prompt,
 .status-ok {
-  color: #5cff82;
+  color: var(--colors-status-success);
 }
 
 .cursor {
   width: 9px;
   height: 1.2em;
-  background: #5cff82;
-  box-shadow: 0 0 16px rgba(92, 255, 130, 0.65);
+  background: var(--colors-status-success);
+  box-shadow: 0 0 16px var(--colors-effect-glow-cursor);
   animation: blink 1.05s steps(2, start) infinite;
 }
 
@@ -122,13 +127,14 @@ h1 {
 
 .panel {
   min-width: 0;
-  border: 1px solid rgba(125, 139, 255, 0.22);
+  border: 1px solid var(--colors-border-default);
   border-radius: 8px;
   background:
-    linear-gradient(180deg, rgba(18, 22, 32, 0.94), rgba(8, 10, 15, 0.92)), rgba(12, 15, 22, 0.86);
+    linear-gradient(180deg, var(--colors-fill-panel-top), var(--colors-fill-panel-bottom)),
+    var(--colors-surface-default);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 26px 80px rgba(0, 0, 0, 0.38);
+    inset 0 1px 0 var(--colors-effect-highlight),
+    0 26px 80px var(--colors-effect-panel-shadow);
 }
 
 .panel-header {
@@ -137,14 +143,14 @@ h1 {
   justify-content: space-between;
   min-height: 42px;
   padding: 0 14px;
-  border-bottom: 1px solid rgba(125, 139, 255, 0.18);
-  color: #f4f7fb;
+  border-bottom: 1px solid var(--colors-border-subtle);
+  color: var(--colors-fg-default);
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 0.78rem;
 }
 
 .muted {
-  color: #7f8798;
+  color: var(--colors-fg-subtle);
 }
 
 .session-panel,
@@ -166,15 +172,19 @@ h1 {
   gap: 12px;
   min-height: 96px;
   padding: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--colors-border-neutral);
   border-radius: 7px;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--colors-surface-subtle);
 }
 
 .session-card.active {
-  border-color: rgba(92, 255, 130, 0.4);
-  background: linear-gradient(135deg, rgba(92, 255, 130, 0.1), rgba(124, 124, 255, 0.12));
-  box-shadow: 0 0 34px rgba(124, 124, 255, 0.15);
+  border-color: var(--colors-border-success-strong);
+  background: linear-gradient(
+    135deg,
+    var(--colors-surface-selected-success),
+    var(--colors-surface-selected-accent)
+  );
+  box-shadow: 0 0 34px var(--colors-effect-glow-primary);
 }
 
 .session-index,
@@ -190,15 +200,15 @@ h1 {
   width: 34px;
   height: 34px;
   place-items: center;
-  border: 1px solid rgba(92, 255, 130, 0.3);
+  border: 1px solid var(--colors-border-success);
   border-radius: 6px;
-  color: #5cff82;
+  color: var(--colors-status-success);
 }
 
 .session-copy h2 {
   margin: 0 0 6px;
   overflow-wrap: anywhere;
-  color: #ffffff;
+  color: var(--colors-fg-inverse);
   font-size: 0.98rem;
   line-height: 1.2;
 }
@@ -207,7 +217,7 @@ h1 {
 .session-copy span,
 .session-meta span {
   margin: 0;
-  color: #99a3b5;
+  color: var(--colors-fg-muted);
   font-size: 0.82rem;
 }
 
@@ -216,7 +226,7 @@ h1 {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  color: #5cff82;
+  color: var(--colors-status-success);
   font-size: 0.78rem;
 }
 
@@ -235,28 +245,30 @@ h1 {
 .tab {
   flex: 0 0 auto;
   padding: 8px 11px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--colors-border-neutral);
   border-radius: 7px 7px 0 0;
-  color: #8f99aa;
-  background: rgba(255, 255, 255, 0.03);
+  color: var(--colors-fg-tab);
+  background: var(--colors-surface-subtle);
   font-size: 0.78rem;
 }
 
 .tab.active {
-  color: #ffffff;
-  border-color: rgba(124, 124, 255, 0.35);
-  background: rgba(124, 124, 255, 0.15);
+  color: var(--colors-fg-inverse);
+  border-color: var(--colors-border-selected);
+  background: var(--colors-surface-selected);
 }
 
 .code-window {
   min-height: 282px;
   margin: 0 14px 14px;
   padding: 20px;
-  border: 1px solid rgba(124, 124, 255, 0.2);
+  border: 1px solid var(--colors-border-code);
   border-radius: 0 7px 7px;
-  background: linear-gradient(90deg, rgba(92, 255, 130, 0.04) 1px, transparent 1px), #080b10;
+  background:
+    linear-gradient(90deg, var(--colors-border-success-subtle) 1px, transparent 1px),
+    var(--colors-bg-code);
   background-size: 32px 32px;
-  color: #d9e2f2;
+  color: var(--colors-fg-code);
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: clamp(0.8rem, 1.5vw, 0.98rem);
   line-height: 1.9;
@@ -270,15 +282,15 @@ h1 {
 .line {
   display: inline-block;
   width: 34px;
-  color: #506072;
+  color: var(--colors-code-line-number);
 }
 
 .keyword {
-  color: #9b5cff;
+  color: var(--colors-code-keyword);
 }
 
 .string {
-  color: #5cff82;
+  color: var(--colors-code-string);
 }
 
 .metric-row,
@@ -288,13 +300,13 @@ h1 {
   justify-content: space-between;
   gap: 12px;
   padding: 12px 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  color: #99a3b5;
+  border-bottom: 1px solid var(--colors-border-neutral-subtle);
+  color: var(--colors-fg-muted);
   font-size: 0.9rem;
 }
 
 .metric-row strong {
-  color: #f4f7fb;
+  color: var(--colors-fg-default);
   font-size: 0.82rem;
 }
 
@@ -306,14 +318,14 @@ h1 {
   min-height: 44px;
   padding: 10px 0;
   overflow-wrap: anywhere;
-  border-bottom-color: rgba(92, 255, 130, 0.16);
+  border-bottom-color: var(--colors-border-success-subtle);
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 0.76rem;
 }
 
 .file-row strong {
   flex: 0 0 44px;
-  color: #d7ff72;
+  color: var(--colors-status-warning);
   text-align: right;
   white-space: nowrap;
 }
@@ -321,11 +333,11 @@ h1 {
 .terminal-panel {
   grid-column: 1 / -1;
   overflow: hidden;
-  border-color: rgba(92, 255, 130, 0.24);
+  border-color: var(--colors-border-success);
 }
 
 .terminal-lines {
-  background: rgba(2, 4, 4, 0.36);
+  background: var(--colors-bg-terminal);
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
 
@@ -333,7 +345,7 @@ h1 {
 .terminal-prompt {
   margin: 0;
   overflow-wrap: anywhere;
-  color: #9cffaa;
+  color: var(--colors-terminal-text);
   font-size: 0.86rem;
   line-height: 1.55;
 }
@@ -341,22 +353,22 @@ h1 {
 .terminal-line span,
 .terminal-prompt span:first-child {
   margin-right: 14px;
-  color: #4f8f5a;
+  color: var(--colors-terminal-dim);
 }
 
 .terminal-line.ok {
-  color: #5cff82;
+  color: var(--colors-status-success);
 }
 
 .terminal-line.warn {
-  color: #d7ff72;
+  color: var(--colors-status-warning);
 }
 
 .terminal-prompt {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #f4f7fb;
+  color: var(--colors-fg-default);
 }
 
 @keyframes blink {
