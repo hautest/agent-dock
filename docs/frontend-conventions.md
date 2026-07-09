@@ -66,6 +66,16 @@ Panda CSS layer는 `src/index.css`에서 정의하고 앱 entry에서 import한�
 
 Panda CSS codegen 결과물은 `styled-system` 폴더에서 import한다.
 
+컴포넌트 스타일은 Panda CSS `css`, `cva`, `sva` 같은 유틸 함수로 작성한다.
+
+Panda CSS JSX 컴포넌트를 직접 import해 화면 구조를 만들지 않는다.
+
+반복되는 variant 스타일은 `cva`로 분리한다.
+
+여러 slot이 함께 움직이는 컴포넌트 스타일은 `sva`로 분리한다.
+
+단일 화면 또는 단일 UI 조각의 고정 스타일은 `css`로 분리한다.
+
 기존 CSS 파일은 점진적으로 유지하거나 정리할 수 있다.
 
 디자인 토큰, recipe, pattern은 별도 스펙에서 정의한 뒤 추가한다.

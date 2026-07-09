@@ -124,7 +124,7 @@ Semantic token은 UI 의도를 표현한다.
 
 ## 적용 규칙
 
-React 컴포넌트 스타일은 Panda CSS `css()` 문법으로 작성한다.
+React 컴포넌트 스타일은 Panda CSS `css`, `cva`, `sva` 같은 유틸 함수로 작성한다.
 
 기존 CSS 파일은 점진 정리 대상이며, 새 색상 적용은 semantic token을 사용한다.
 
