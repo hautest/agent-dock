@@ -46,13 +46,13 @@ Semantic token은 UI 사용 의도를 표현한다.
 * 샘플 UI는 Panda CSS 문법으로 대표 색상에 semantic token을 사용한다.
 * `docs/design-color-tokens.md`는 색상 token의 사용 상황을 설명한다.
 * 디자인 가이드의 핵심 색상 값이 primitive token에 반영된다.
-* `pnpm lint:ts`, `pnpm format:ts:check`, `pnpm typecheck`, `pnpm build`가 통과한다.
+* `corepack pnpm lint:ts`, `corepack pnpm format:ts:check`, `corepack pnpm typecheck`, `corepack pnpm build`가 통과한다.
 
 ## 검증 방법
 
 ```bash
-pnpm lint:ts
-pnpm format:ts:check
-pnpm typecheck
-pnpm build
+corepack pnpm lint:ts
+corepack pnpm format:ts:check
+corepack pnpm typecheck
+corepack pnpm build
 ```

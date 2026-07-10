@@ -1,4 +1,5 @@
 import { css } from "../../styled-system/css";
+import { claudeLauncherStyles } from "./app-claude-launcher.styles";
 import { editorTerminalStyles } from "./app-editor-terminal.styles";
 import { panelStyles } from "./app-panel.styles";
 
@@ -46,7 +47,7 @@ export const styles = {
   }),
   title: css({
     color: "fg.strong",
-    fontSize: "clamp(3.25rem, 8vw, 7rem)",
+    fontSize: { base: "3.25rem", md: "5rem", lg: "6.25rem" },
     lineHeight: "0.86",
     margin: "0",
   }),
@@ -98,6 +99,7 @@ export const styles = {
     },
     gridTemplateRows: { base: "auto", lg: "minmax(360px, 1fr) minmax(210px, 0.45fr)" },
   }),
+  ...claudeLauncherStyles,
   ...panelStyles,
   ...editorTerminalStyles,
 };

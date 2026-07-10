@@ -6,30 +6,33 @@
 
 ```bash
 mise install
+corepack enable
 node --version
-pnpm --version
+corepack pnpm --version
 rustc --version
 cargo --version
 ```
 
 기대 버전은 Node.js `24.7.0`, pnpm `11.7.0`, Rust `1.96.0`이다.
 
+pnpm은 mise tool로 직접 설치하지 않고 Node.js Corepack과 `package.json`의 `packageManager` 값을 사용한다.
+
 ## TypeScript 검증
 
 TypeScript 변경 후 가능한 경우 다음을 실행한다.
 
 ```bash
-pnpm lint:ts
-pnpm format:ts:check
-pnpm typecheck
-pnpm build
+corepack pnpm lint:ts
+corepack pnpm format:ts:check
+corepack pnpm typecheck
+corepack pnpm build
 ```
 
 전체 lint와 format 검증은 루트에서 다음 명령으로 실행한다.
 
 ```bash
-pnpm lint
-pnpm format:check
+corepack pnpm lint
+corepack pnpm format:check
 ```
 
 ## Rust 검증
@@ -47,8 +50,8 @@ cargo test
 루트 package script로 실행할 때는 다음 명령을 사용할 수 있다.
 
 ```bash
-pnpm lint:rust
-pnpm format:rust:check
+corepack pnpm lint:rust
+corepack pnpm format:rust:check
 ```
 
 ## 실행하지 못한 경우
