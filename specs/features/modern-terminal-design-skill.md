@@ -43,8 +43,8 @@
 ## 검증 방법
 
 ```bash
-corepack pnpm typecheck
-corepack pnpm build
+pnpm typecheck
+pnpm build
 ```
 
 가능한 경우 로컬 앱을 실행해 화면을 직접 확인한다.

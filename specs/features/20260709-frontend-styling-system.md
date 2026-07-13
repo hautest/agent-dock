@@ -42,13 +42,13 @@ Panda CSS 적용 여부를 확인할 수 있는 작은 UI 표식이 화면에 �
 * `src/index.css`가 Panda CSS layer를 정의하고 앱 entry에서 import된다.
 * 기존 화면에 Panda CSS로 작성한 class가 최소 1곳 적용된다.
 * 디자인 토큰은 별도로 정의하지 않는다.
-* `corepack pnpm lint:ts`, `corepack pnpm format:ts:check`, `corepack pnpm typecheck`, `corepack pnpm build`가 통과한다.
+* `pnpm lint:ts`, `pnpm format:ts:check`, `pnpm typecheck`, `pnpm build`가 통과한다.
 
 ## 검증 방법
 
 ```bash
-corepack pnpm lint:ts
-corepack pnpm format:ts:check
-corepack pnpm typecheck
-corepack pnpm build
+pnpm lint:ts
+pnpm format:ts:check
+pnpm typecheck
+pnpm build
 ```

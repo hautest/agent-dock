@@ -6,7 +6,7 @@ Agent Dock에서 Claude Code CLI를 기본 agent view로 실행할 수 있게 �
 
 ## 범위
 
-* mise는 Node.js와 Rust를 고정하고 pnpm은 Corepack이 `package.json`의 `packageManager` 기준으로 활성화한다.
+* mise는 Node.js, pnpm, Rust를 고정한다.
 * Rust backend는 Claude Code CLI 상태 확인, 인증 상태 확인, 로그인 실행, agent view 실행 command를 제공한다.
 * Frontend는 Claude Code 연동 상태를 보여주는 테스트용 agent view 화면을 기본 진입 화면으로 연다.
 * 로그인되어 있지 않으면 별도 로그인 모달에서 Terminal 로그인 실행 버튼을 제공한다.
@@ -74,8 +74,8 @@ Agent Dock에서 Claude Code CLI를 기본 agent view로 실행할 수 있게 �
 
 ## Acceptance Criteria
 
-* `.mise.toml`에서 pnpm aqua backend 설치 오류가 발생하지 않는다.
-* `corepack pnpm --version`은 `11.7.0`을 출력한다.
+* `mise install`은 Node.js, pnpm, Rust를 설치한다.
+* `pnpm --version`은 `11.7.0`을 출력한다.
 * 앱 기본 화면은 Claude Code agent view 테스트 UI다.
 * Claude Code CLI가 없으면 UI가 설치 필요 상태를 표시한다.
 * 로그인 상태는 `claude auth status` 결과를 기반으로 표시한다.
@@ -84,17 +84,17 @@ Agent Dock에서 Claude Code CLI를 기본 agent view로 실행할 수 있게 �
 * permission mode 선택은 `--permission-mode default`, `--permission-mode auto`, `--permission-mode bypassPermissions` 중 하나만 전달한다.
 * 권한 전부 허용 mode는 UI에서 위험 상태로 표시한다.
 * Rust command 인자 조립은 unit test로 검증한다.
-* `corepack pnpm lint:ts`, `corepack pnpm format:ts:check`, `corepack pnpm typecheck`, `corepack pnpm build`, Rust 검증 명령이 통과한다.
+* `pnpm lint:ts`, `pnpm format:ts:check`, `pnpm typecheck`, `pnpm build`, Rust 검증 명령이 통과한다.
 
 ## 검증 방법
 
 ```bash
 mise install
-corepack pnpm --version
-corepack pnpm lint:ts
-corepack pnpm format:ts:check
-corepack pnpm typecheck
-corepack pnpm build
+pnpm --version
+pnpm lint:ts
+pnpm format:ts:check
+pnpm typecheck
+pnpm build
 cd src-tauri
 cargo fmt --check
 cargo check
@@ -105,5 +105,5 @@ cargo test
 가능한 경우 다음 명령으로 로컬 앱 실행까지 확인한다.
 
 ```bash
-corepack pnpm tauri dev
+pnpm tauri dev
 ```
