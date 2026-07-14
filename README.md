@@ -9,6 +9,9 @@ Claude Code agent 세션을 하나의 로컬 IDE 화면에서 관리하기 위�
 * TypeScript
 * Vite
 * pnpm
+* TanStack Query + Suspensive
+* Jotai
+* overlay-kit
 
 ## Scripts
 
@@ -18,6 +21,7 @@ pnpm dev
 pnpm lint
 pnpm format:check
 pnpm typecheck
+pnpm test
 pnpm build
 pnpm tauri dev
 ```

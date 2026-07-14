@@ -1,196 +1,61 @@
-import { styles } from "./app.styles";
-
-interface AgentSession {
-  id: string;
-  name: string;
-  repo: string;
-  branch: string;
-  status: string;
-  changes: string;
-  active?: boolean;
-}
-
-interface FileNode {
-  path: string;
-  state: string;
-}
-
-interface LogLine {
-  prefix: string;
-  message: string;
-  tone?: "ok" | "warn";
-}
-
-const sessions: AgentSession[] = [
-  {
-    id: "01",
-    name: "claude-code/main",
-    repo: "agent-dock",
-    branch: "main",
-    status: "[OK] attached",
-    changes: "+12 -3",
-    active: true,
-  },
-  {
-    id: "02",
-    name: "review/fix-shell",
-    repo: "agent-dock",
-    branch: "ui-modern-terminal",
-    status: "[SYNC] idle",
-    changes: "+4 -1",
-  },
-  {
-    id: "03",
-    name: "docs/spec-pass",
-    repo: "agent-dock",
-    branch: "spec-first",
-    status: "[WAIT] paused",
-    changes: "+2 -0",
-  },
-];
-
-const files: FileNode[] = [
-  { path: "src/app/App.tsx", state: "open" },
-  { path: "src/app/app.styles.ts", state: "dirty" },
-  { path: "docs/modern-terminal-design-guide.md", state: "new" },
-  { path: ".codex/skills/modern-terminal-design/SKILL.md", state: "new" },
-];
-
-const logs: LogLine[] = [
-  { prefix: "09:42:13", message: "session restored for claude-code/main", tone: "ok" },
-  { prefix: "09:42:18", message: "worktree attached ~/workspace/agent-dock" },
-  { prefix: "09:42:22", message: "git status scanned: 4 changed files", tone: "warn" },
-  { prefix: "09:42:29", message: "terminal pane linked to active agent", tone: "ok" },
-];
+import { ErrorBoundary, Suspense } from "@suspensive/react";
+import { SuspenseQuery } from "@suspensive/react-query";
+import { useAtomValue } from "jotai";
+import { css } from "../../styled-system/css";
+import { claudePermissionModeAtom } from "../features/claude-code/claude-code-atoms";
+import { claudeCliStatusQueryOptions } from "../features/claude-code/claude-code-queries";
+import { MONO_FONT } from "../shared/styles/typography";
+import { ClaudeDashboard } from "./claude-launcher/ClaudeDashboard";
+import { queryClient } from "./query-client";
 
 function App() {
+  const selectedMode = useAtomValue(claudePermissionModeAtom);
+
   return (
-    <main className={styles.appShell}>
-      <div className={styles.scanline} aria-hidden="true" />
-      <section className={styles.workspace} aria-labelledby="workspace-title">
-        <header className={styles.topbar}>
+    <main className={appShell}>
+      <div className={scanline} aria-hidden="true" />
+      <section className={workspace} aria-labelledby="workspace-title">
+        <header className={topbar}>
           <div>
-            <p className={styles.eyebrow}>agent-aware local editor shell</p>
-            <h1 className={styles.title} id="workspace-title">
+            <p className={eyebrow}>claude code agent view</p>
+            <h1 className={title} id="workspace-title">
               Agent Dock
             </h1>
-            <span className={styles.pandaBadge}>panda css ready</span>
+            <span className={pandaBadge}>claude cli ready</span>
           </div>
-          <div className={styles.commandPill} aria-label="current workspace path">
-            <span className={styles.prompt}>$</span>
-            <span>~/workspace/agent-dock</span>
-            <span className={styles.cursor} aria-hidden="true" />
+          <div className={commandPill} aria-label="current launcher command">
+            <span className={prompt}>$</span>
+            <span>claude agents --permission-mode {selectedMode}</span>
+            <span className={cursor} aria-hidden="true" />
           </div>
         </header>
 
-        <div className={styles.shellGrid}>
-          <aside className={`${styles.panel} ${styles.clippedPanel}`} aria-label="agent sessions">
-            <div className={styles.panelHeader}>
-              <span>agents</span>
-              <span className={styles.muted}>3 live</span>
-            </div>
-            <div className={styles.stack}>
-              {sessions.map((session) => (
-                <article className={styles.sessionCard(session.active)} key={session.id}>
-                  <div className={styles.sessionIndex}>{session.id}</div>
-                  <div>
-                    <h2 className={styles.sessionCopyTitle}>{session.name}</h2>
-                    <p className={styles.sessionCopyText}>{session.repo}</p>
-                    <span className={styles.sessionCopyText}>{session.branch}</span>
-                  </div>
-                  <div className={styles.sessionMeta}>
-                    <strong>{session.status}</strong>
-                    <span>{session.changes}</span>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </aside>
-
-          <section className={`${styles.panel} ${styles.editorPanel}`} aria-label="editor preview">
-            <div className={styles.panelHeader}>
-              <span>editor</span>
-              <span className={styles.muted}>App.tsx</span>
-            </div>
-            <div className={styles.editorTabs} aria-label="open tabs">
-              <span className={`${styles.tab} ${styles.tabActive}`}>App.tsx</span>
-              <span className={styles.tab}>app.styles.ts</span>
-              <span className={styles.tab}>design-tokens.md</span>
-            </div>
-            <div className={styles.codeWindow} aria-label="code preview">
-              <p>
-                <span className={styles.codeLineNumber}>01</span>
-                <span className={styles.keyword}>const</span> activeAgent =
-                <span className={styles.string}> "claude-code/main"</span>;
+        <div className={shellGrid}>
+          <ErrorBoundary
+            fallback={({ error, reset }) => (
+              <p className={boundaryMessage} role="alert">
+                Claude Code 상태를 읽지 못했습니다: {error.message}
+                <button
+                  className={boundaryButton}
+                  onClick={() => {
+                    void queryClient.resetQueries({
+                      queryKey: claudeCliStatusQueryOptions.queryKey,
+                    });
+                    reset();
+                  }}
+                  type="button"
+                >
+                  retry
+                </button>
               </p>
-              <p>
-                <span className={styles.codeLineNumber}>02</span>
-                syncWorkspace(activeAgent, repo, terminal);
-              </p>
-              <p>
-                <span className={styles.codeLineNumber}>03</span>
-                renderShell(
-                <span className={styles.string}>"modern-terminal"</span>);
-              </p>
-              <p>
-                <span className={styles.codeLineNumber}>04</span>
-                status.write(
-                <span className={styles.string}>"[OK] context switched"</span>);
-              </p>
-            </div>
-          </section>
-
-          <aside
-            className={`${styles.panel} ${styles.clippedPanel}`}
-            aria-label="workspace context"
+            )}
           >
-            <div className={styles.panelHeader}>
-              <span>context</span>
-              <span className={styles.statusOk}>[OK]</span>
-            </div>
-            <div className={styles.metricRow}>
-              <span>worktree</span>
-              <strong>attached</strong>
-            </div>
-            <div className={styles.metricRow}>
-              <span>git</span>
-              <strong>+12 -3</strong>
-            </div>
-            <div className={styles.metricRow}>
-              <span>terminal</span>
-              <strong>restored</strong>
-            </div>
-            <div className={styles.fileStack}>
-              {files.map((file) => (
-                <div className={styles.fileRow} key={file.path}>
-                  <span>{file.path}</span>
-                  <strong>{file.state}</strong>
-                </div>
-              ))}
-            </div>
-          </aside>
-
-          <section
-            className={`${styles.panel} ${styles.terminalPanel}`}
-            aria-label="terminal preview"
-          >
-            <div className={styles.panelHeader}>
-              <span>terminal</span>
-              <span className={styles.muted}>session: claude-code/main</span>
-            </div>
-            <div className={styles.terminalLines}>
-              {logs.map((log) => (
-                <p className={styles.terminalLine(log.tone)} key={log.message}>
-                  <span>{log.prefix}</span>
-                  {log.message}
-                </p>
-              ))}
-              <p className={styles.terminalPrompt}>
-                <span>agent-dock %</span> pnpm build
-                <span className={styles.cursor} aria-hidden="true" />
-              </p>
-            </div>
-          </section>
+            <Suspense fallback={<p className={boundaryMessage}>reading claude cli status</p>}>
+              <SuspenseQuery {...claudeCliStatusQueryOptions}>
+                {(statusQuery) => <ClaudeDashboard statusQuery={statusQuery} />}
+              </SuspenseQuery>
+            </Suspense>
+          </ErrorBoundary>
         </div>
       </section>
     </main>
@@ -198,3 +63,127 @@ function App() {
 }
 
 export default App;
+
+const boundaryMessage = css({
+  color: "status.warning",
+  fontFamily: MONO_FONT,
+  gridColumn: "1 / -1",
+  margin: "0",
+  padding: "24px",
+});
+
+const boundaryButton = css({
+  background: "surface.subtle",
+  border: "1px solid token(colors.border.success)",
+  borderRadius: "7px",
+  color: "status.success",
+  cursor: "pointer",
+  fontFamily: MONO_FONT,
+  marginLeft: "12px",
+  minHeight: "36px",
+  paddingInline: "12px",
+});
+
+const appShell = css({
+  background:
+    "radial-gradient(circle at 72% 12%, token(colors.effect.glowPrimaryStrong), transparent 30%), radial-gradient(circle at 18% 82%, token(colors.effect.glowSuccessSoft), transparent 26%), linear-gradient(145deg, token(colors.bg.canvas) 0%, token(colors.bg.canvasRaised) 54%, token(colors.bg.code) 100%)",
+  minHeight: "100vh",
+  overflow: "hidden",
+  padding: { base: "14px", md: "20px", lg: "28px" },
+  position: "relative",
+});
+
+const scanline = css({
+  backgroundImage: "linear-gradient(token(colors.effect.scanline) 1px, transparent 1px)",
+  backgroundSize: "100% 4px",
+  inset: "0",
+  opacity: "0.4",
+  pointerEvents: "none",
+  position: "fixed",
+});
+
+const workspace = css({
+  display: "grid",
+  gap: "18px",
+  minHeight: { base: "calc(100vh - 28px)", md: "calc(100vh - 56px)" },
+  position: "relative",
+  zIndex: "1",
+});
+
+const topbar = css({
+  alignItems: { base: "start", lg: "end" },
+  display: "flex",
+  flexDirection: { base: "column", lg: "row" },
+  gap: "20px",
+  justifyContent: "space-between",
+  minHeight: "96px",
+  padding: "4px 2px",
+});
+
+const eyebrow = css({
+  color: "status.success",
+  fontFamily: MONO_FONT,
+  fontSize: "0.78rem",
+  letterSpacing: "0",
+  margin: "0 0 8px",
+});
+
+const title = css({
+  color: "fg.strong",
+  fontSize: { base: "3.25rem", md: "5rem", lg: "6.25rem" },
+  lineHeight: "0.86",
+  margin: "0",
+});
+
+const pandaBadge = css({
+  alignItems: "center",
+  borderColor: "border.success",
+  borderRadius: "6px",
+  borderWidth: "1px",
+  color: "status.success",
+  display: "inline-flex",
+  fontFamily: MONO_FONT,
+  fontSize: "0.72rem",
+  minHeight: "28px",
+  paddingInline: "10px",
+});
+
+const commandPill = css({
+  alignItems: "center",
+  background: "surface.shell",
+  border: "1px solid token(colors.border.success)",
+  borderRadius: "8px",
+  boxShadow: "0 0 34px token(colors.effect.glowSuccess)",
+  color: "status.warning",
+  display: "flex",
+  fontFamily: MONO_FONT,
+  gap: "10px",
+  maxWidth: "100%",
+  minHeight: "44px",
+  padding: "0 16px",
+  whiteSpace: { base: "normal", md: "nowrap" },
+  width: { base: "100%", md: "auto" },
+});
+
+const prompt = css({
+  color: "status.success",
+});
+
+const cursor = css({
+  animation: "blink 1.05s steps(2, start) infinite",
+  background: "status.success",
+  boxShadow: "0 0 16px token(colors.effect.glowCursor)",
+  height: "1.2em",
+  width: "9px",
+});
+
+const shellGrid = css({
+  display: "grid",
+  gap: "14px",
+  gridTemplateColumns: {
+    base: "1fr",
+    md: "1fr 1fr",
+    lg: "minmax(250px, 0.82fr) minmax(380px, 1.42fr) minmax(260px, 0.82fr)",
+  },
+  gridTemplateRows: { base: "auto", lg: "minmax(360px, 1fr) minmax(210px, 0.45fr)" },
+});
