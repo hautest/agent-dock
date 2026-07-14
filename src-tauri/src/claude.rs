@@ -359,19 +359,22 @@ fn common_binary_directories() -> Vec<PathBuf> {
 }
 
 fn executable_in_directory(directory: &Path, name: &str) -> Option<PathBuf> {
-    let candidate = directory.join(name);
-    if is_executable_file(&candidate) {
-        return Some(candidate);
-    }
+    #[cfg(windows)]
+    let extensions = ["cmd", "exe", "bat"].as_slice();
+    #[cfg(not(windows))]
+    let extensions: &[&str] = &[];
 
-    if cfg!(windows) {
-        let candidate = directory.join(format!("{name}.exe"));
-        if is_executable_file(&candidate) {
-            return Some(candidate);
-        }
-    }
+    executable_candidates(directory, name, extensions)
+        .into_iter()
+        .find(|candidate| is_executable_file(candidate))
+}
 
-    None
+fn executable_candidates(directory: &Path, name: &str, extensions: &[&str]) -> Vec<PathBuf> {
+    extensions
+        .iter()
+        .map(|extension| directory.join(format!("{name}.{extension}")))
+        .chain(std::iter::once_with(|| directory.join(name)))
+        .collect()
 }
 
 #[cfg(unix)]
@@ -389,10 +392,23 @@ fn is_executable_file(path: &Path) -> bool {
 #[cfg(test)]
 mod tests {
     use super::{
-        build_agent_view_args, build_agent_view_list_args, display_command, parse_agent_views,
-        shell_display_arg, ClaudeAgentView, ClaudePermissionMode,
+        build_agent_view_args, build_agent_view_list_args, display_command, executable_candidates,
+        parse_agent_views, shell_display_arg, ClaudeAgentView, ClaudePermissionMode,
     };
-    use std::path::Path;
+    use std::path::{Path, PathBuf};
+
+    #[test]
+    fn prioritizes_windows_executable_wrappers() {
+        assert_eq!(
+            executable_candidates(Path::new("C:/bin"), "claude", &["cmd", "exe", "bat"]),
+            vec![
+                PathBuf::from("C:/bin/claude.cmd"),
+                PathBuf::from("C:/bin/claude.exe"),
+                PathBuf::from("C:/bin/claude.bat"),
+                PathBuf::from("C:/bin/claude"),
+            ]
+        );
+    }
 
     #[test]
     fn builds_default_agent_view_args() {

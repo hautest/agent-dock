@@ -114,6 +114,7 @@ Agent Dock에서 Claude Code CLI를 기본 agent view로 실행할 수 있게 �
 * permission mode 선택은 `--permission-mode default`, `--permission-mode auto`, `--permission-mode bypassPermissions` 중 하나만 전달한다.
 * 권한 전부 허용 mode는 UI에서 위험 상태로 표시하고 별도 확인 뒤 실행한다.
 * Rust command 인자 조립은 unit test로 검증한다.
+* Windows의 Claude CLI 탐색은 `.cmd`, `.exe`, `.bat` wrapper를 확장자 없는 경로보다 먼저 확인한다.
 * server state는 TanStack Query와 Suspensive 경계에서 조회하고 갱신한다.
 * permission mode, repo 경로, 최근 실행 결과는 Jotai atom으로 관리한다.
 * 로그인과 권한 전부 허용 확인 modal은 overlay-kit으로 연다.
