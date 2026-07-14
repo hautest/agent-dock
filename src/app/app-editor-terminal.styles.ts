@@ -1,6 +1,5 @@
 import { css } from "../../styled-system/css";
-
-const monoFont = "SFMono-Regular, Consolas, Liberation Mono, monospace";
+import { MONO_FONT } from "../shared/styles/typography";
 
 const terminalLine = css({
   color: "terminal.text",
@@ -41,7 +40,7 @@ export const editorTerminalStyles = {
     borderRadius: "7px 7px 0 0",
     color: "fg.tab",
     flex: "0 0 auto",
-    fontFamily: monoFont,
+    fontFamily: MONO_FONT,
     fontSize: "0.78rem",
     padding: "8px 11px",
   }),
@@ -57,7 +56,7 @@ export const editorTerminalStyles = {
     border: "1px solid token(colors.border.code)",
     borderRadius: "0 7px 7px",
     color: "fg.code",
-    fontFamily: monoFont,
+    fontFamily: MONO_FONT,
     fontSize: "clamp(0.8rem, 1.5vw, 0.98rem)",
     lineHeight: "1.9",
     margin: "0 14px 14px",
@@ -88,7 +87,7 @@ export const editorTerminalStyles = {
   terminalLines: css({
     background: "bg.terminal",
     display: "grid",
-    fontFamily: monoFont,
+    fontFamily: MONO_FONT,
     gap: "10px",
     padding: "14px",
   }),

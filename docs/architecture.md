@@ -31,6 +31,16 @@ Frontend는 다음 영역을 담당한다.
 * Git 상태 표시 UI
 * 사용자 상호작용 상태 관리
 
+## Frontend 상태 경계
+
+Tauri command에서 조회하는 server state와 mutation은 TanStack Query가 관리한다.
+
+Suspense 기반 server state 경계는 Suspensive로 표현한다.
+
+여러 화면 조각이 공유하는 agent launcher 상태는 Jotai가 관리한다.
+
+Modal과 confirm UI의 생명주기는 overlay-kit이 관리한다.
+
 ## 경계
 
 Frontend에서 임의의 shell command를 직접 실행하지 않는다.
@@ -38,3 +48,5 @@ Frontend에서 임의의 shell command를 직접 실행하지 않는다.
 로컬 시스템 접근은 Rust backend command를 통해 수행한다.
 
 command 입력과 출력 타입은 명확하게 정의한다.
+
+외부 process를 기다리는 Tauri command는 async command와 blocking worker 경계를 사용한다.

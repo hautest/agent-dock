@@ -1,9 +1,7 @@
 import { css } from "../../styled-system/css";
-import { claudeLauncherStyles } from "./app-claude-launcher.styles";
+import { MONO_FONT } from "../shared/styles/typography";
 import { editorTerminalStyles } from "./app-editor-terminal.styles";
 import { panelStyles } from "./app-panel.styles";
-
-const monoFont = "SFMono-Regular, Consolas, Liberation Mono, monospace";
 
 export const styles = {
   appShell: css({
@@ -40,7 +38,7 @@ export const styles = {
   }),
   eyebrow: css({
     color: "status.success",
-    fontFamily: monoFont,
+    fontFamily: MONO_FONT,
     fontSize: "0.78rem",
     letterSpacing: "0",
     margin: "0 0 8px",
@@ -58,7 +56,7 @@ export const styles = {
     borderWidth: "1px",
     color: "status.success",
     display: "inline-flex",
-    fontFamily: monoFont,
+    fontFamily: MONO_FONT,
     fontSize: "0.72rem",
     minHeight: "28px",
     paddingInline: "10px",
@@ -71,7 +69,7 @@ export const styles = {
     boxShadow: "0 0 34px token(colors.effect.glowSuccess)",
     color: "status.warning",
     display: "flex",
-    fontFamily: monoFont,
+    fontFamily: MONO_FONT,
     gap: "10px",
     maxWidth: "100%",
     minHeight: "44px",
@@ -99,7 +97,6 @@ export const styles = {
     },
     gridTemplateRows: { base: "auto", lg: "minmax(360px, 1fr) minmax(210px, 0.45fr)" },
   }),
-  ...claudeLauncherStyles,
   ...panelStyles,
   ...editorTerminalStyles,
 };

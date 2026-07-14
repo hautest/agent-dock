@@ -1,79 +1,36 @@
-import { useEffect, useMemo, useState } from "react";
-import { ClaudeAgentLauncherPanel } from "./claude-launcher/ClaudeAgentLauncherPanel";
-import { ClaudeCommandLog } from "./claude-launcher/ClaudeCommandLog";
-import { ClaudeContextPanel } from "./claude-launcher/ClaudeContextPanel";
-import { ClaudeLoginModal } from "./claude-launcher/ClaudeLoginModal";
-import { ClaudeStatusPanel } from "./claude-launcher/ClaudeStatusPanel";
-import { permissionModes } from "./claude-launcher/permission-modes";
-import type { OperationResult } from "./claude-launcher/types";
+import { ErrorBoundary, Suspense } from "@suspensive/react";
+import { SuspenseQuery } from "@suspensive/react-query";
+import { useAtomValue } from "jotai";
+import { css } from "../../styled-system/css";
+import { claudePermissionModeAtom } from "../features/claude-code/claude-code-atoms";
+import { claudeCliStatusQueryOptions } from "../features/claude-code/claude-code-queries";
+import { MONO_FONT } from "../shared/styles/typography";
 import { styles } from "./app.styles";
-import {
-  getClaudeCliStatus,
-  launchClaudeAgentView,
-  startClaudeLogin,
-} from "../features/claude-code/claude-code-client";
-import type { ClaudeCliStatus, ClaudePermissionMode } from "../features/claude-code/types";
+import { ClaudeDashboard } from "./claude-launcher/ClaudeDashboard";
+import { queryClient } from "./query-client";
+
+const boundaryMessage = css({
+  color: "status.warning",
+  fontFamily: MONO_FONT,
+  gridColumn: "1 / -1",
+  margin: "0",
+  padding: "24px",
+});
+
+const boundaryButton = css({
+  background: "surface.subtle",
+  border: "1px solid token(colors.border.success)",
+  borderRadius: "7px",
+  color: "status.success",
+  cursor: "pointer",
+  fontFamily: MONO_FONT,
+  marginLeft: "12px",
+  minHeight: "36px",
+  paddingInline: "12px",
+});
 
 function App() {
-  const [status, setStatus] = useState<ClaudeCliStatus | null>(null);
-  const [selectedMode, setSelectedMode] = useState<ClaudePermissionMode>("default");
-  const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [operationResult, setOperationResult] = useState<OperationResult | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const selectedModeOption = useMemo(
-    () => permissionModes.find((mode) => mode.value === selectedMode) ?? permissionModes[0],
-    [selectedMode],
-  );
-
-  async function refreshStatus() {
-    setLoading(true);
-    setErrorMessage(null);
-
-    try {
-      setStatus(await getClaudeCliStatus());
-    } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : String(error));
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function handleStartLogin() {
-    setLoading(true);
-    setErrorMessage(null);
-
-    try {
-      setOperationResult(await startClaudeLogin());
-    } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : String(error));
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function handleLaunchAgentView() {
-    setLoading(true);
-    setErrorMessage(null);
-
-    try {
-      setOperationResult(await launchClaudeAgentView({ mode: selectedMode }));
-    } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : String(error));
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    void refreshStatus();
-  }, []);
-
-  const auth = status?.auth;
-  const agentLaunchDisabled = loading || !status?.available || !auth?.loggedIn;
-  const statusTone = status?.available ? "ok" : "warn";
-  const authTone = auth?.loggedIn ? "ok" : "warn";
+  const selectedMode = useAtomValue(claudePermissionModeAtom);
 
   return (
     <main className={styles.appShell}>
@@ -95,45 +52,33 @@ function App() {
         </header>
 
         <div className={styles.shellGrid}>
-          <ClaudeStatusPanel
-            onRefresh={() => void refreshStatus()}
-            status={status}
-            statusTone={statusTone}
-          />
-          <ClaudeAgentLauncherPanel
-            agentLaunchDisabled={agentLaunchDisabled}
-            onLaunch={() => void handleLaunchAgentView()}
-            onModeChange={setSelectedMode}
-            onOpenLogin={() => setLoginModalOpen(true)}
-            selectedMode={selectedMode}
-            selectedModeOption={selectedModeOption}
-          />
-          <ClaudeContextPanel
-            auth={auth}
-            authTone={authTone}
-            selectedMode={selectedMode}
-            status={status}
-          />
-          <ClaudeCommandLog
-            authLoggedIn={auth?.loggedIn ?? false}
-            authTone={authTone}
-            errorMessage={errorMessage}
-            loading={loading}
-            operationResult={operationResult}
-            statusAvailable={status?.available ?? false}
-            statusTone={statusTone}
-          />
+          <ErrorBoundary
+            fallback={({ error, reset }) => (
+              <p className={boundaryMessage} role="alert">
+                Claude Code 상태를 읽지 못했습니다: {error.message}
+                <button
+                  className={boundaryButton}
+                  onClick={() => {
+                    void queryClient.resetQueries({
+                      queryKey: claudeCliStatusQueryOptions.queryKey,
+                    });
+                    reset();
+                  }}
+                  type="button"
+                >
+                  retry
+                </button>
+              </p>
+            )}
+          >
+            <Suspense fallback={<p className={boundaryMessage}>reading claude cli status</p>}>
+              <SuspenseQuery {...claudeCliStatusQueryOptions}>
+                {(statusQuery) => <ClaudeDashboard statusQuery={statusQuery} />}
+              </SuspenseQuery>
+            </Suspense>
+          </ErrorBoundary>
         </div>
       </section>
-
-      {loginModalOpen ? (
-        <ClaudeLoginModal
-          disabled={loading || !status?.available}
-          onClose={() => setLoginModalOpen(false)}
-          onRefreshStatus={() => void refreshStatus()}
-          onStartLogin={() => void handleStartLogin()}
-        />
-      ) : null}
     </main>
   );
 }

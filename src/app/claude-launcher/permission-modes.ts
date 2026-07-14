@@ -29,3 +29,7 @@ export const permissionModes: PermissionModeOption[] = [
     danger: true,
   },
 ];
+
+export function requiresPermissionConfirmation(mode: ClaudePermissionMode): boolean {
+  return mode === "bypassPermissions";
+}

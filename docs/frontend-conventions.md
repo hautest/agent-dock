@@ -76,9 +76,9 @@ Panda CSS JSX 컴포넌트를 직접 import해 화면 구조를 만들지 않는
 
 단일 화면 또는 단일 UI 조각의 고정 스타일은 `css`로 분리한다.
 
-스타일 전용 파일 이름은 소문자 kebab-case와 `.styles.ts` suffix를 사용한다.
+컴포넌트 전용 스타일 선언은 해당 컴포넌트 파일에 함께 둔다.
 
-예시는 `app.styles.ts`, `app-panel.styles.ts`와 같다.
+앱 셸처럼 여러 컴포넌트가 공유하는 레이아웃 스타일만 역할이 드러나는 `.styles.ts` 파일에 둔다.
 
 기존 CSS 파일은 점진적으로 유지하거나 정리할 수 있다.
 
@@ -108,11 +108,25 @@ Tauri command 호출은 컴포넌트 내부에 흩뿌리지 않고 별도 client
 
 로컬 시스템 작업은 Rust backend command를 통해 수행한다.
 
+## 상태 관리
+
+Tauri command에서 조회하는 server state는 TanStack Query로 관리한다.
+
+Suspense가 적용되는 server state 경계는 Suspensive 컴포넌트로 명시한다.
+
+여러 컴포넌트가 공유하는 launcher 상태는 Jotai atom으로 관리한다.
+
+Modal과 confirm UI의 생명주기는 overlay-kit으로 관리한다.
+
+컴포넌트 내부에서만 사용하는 임시 UI 상태는 React local state로 관리한다.
+
 ## 테스트
 
 TDD 원칙을 따른다.
 
 새로운 UI 동작, 상태 변경, hook, util을 작성할 때는 테스트 코드를 함께 작성한다.
+
+프론트엔드 단위 테스트는 Vitest와 Testing Library로 작성한다.
 
 버그를 수정할 때는 먼저 실패하는 테스트를 추가하거나 기존 테스트로 재현한다.
 

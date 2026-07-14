@@ -7,6 +7,9 @@ use std::{
     process::{Command, Stdio},
 };
 
+#[cfg(unix)]
+use std::os::unix::fs::PermissionsExt;
+
 const CLAUDE_BIN: &str = "claude";
 
 #[derive(Debug)]
@@ -15,6 +18,7 @@ pub enum ClaudeError {
     Io(std::io::Error),
     InvalidWorkingDirectory(String),
     Json(serde_json::Error),
+    CommandFailed(String),
 }
 
 impl fmt::Display for ClaudeError {
@@ -27,8 +31,11 @@ impl fmt::Display for ClaudeError {
             }
             Self::Json(error) => write!(
                 formatter,
-                "Claude 인증 상태 응답을 읽을 수 없습니다: {error}"
+                "Claude Code CLI JSON 응답을 읽을 수 없습니다: {error}"
             ),
+            Self::CommandFailed(message) => {
+                write!(formatter, "Claude Code CLI 명령이 실패했습니다: {message}")
+            }
         }
     }
 }
@@ -53,6 +60,7 @@ pub struct ClaudeCliStatus {
     pub available: bool,
     pub version: Option<String>,
     pub path: Option<String>,
+    pub default_cwd: String,
     pub auth: ClaudeAuthStatus,
 }
 
@@ -101,15 +109,21 @@ impl ClaudePermissionMode {
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ClaudeLaunchRequest {
-    pub cwd: Option<String>,
+    pub cwd: String,
     pub mode: ClaudePermissionMode,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ClaudeAgentViewsRequest {
+    pub cwd: String,
 }
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ClaudeLaunchResult {
     pub command: String,
-    pub pid: u32,
+    pub pid: Option<u32>,
     pub mode: ClaudePermissionMode,
     pub cwd: String,
 }
@@ -118,26 +132,43 @@ pub struct ClaudeLaunchResult {
 #[serde(rename_all = "camelCase")]
 pub struct ClaudeLoginResult {
     pub command: String,
-    pub pid: u32,
+    pub pid: Option<u32>,
+}
+
+#[derive(Debug, Deserialize, Serialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct ClaudeAgentView {
+    pub id: Option<String>,
+    pub session_id: Option<String>,
+    pub pid: Option<u32>,
+    pub cwd: String,
+    pub kind: String,
+    pub name: Option<String>,
+    pub status: Option<String>,
+    pub state: Option<String>,
+    pub started_at: u64,
 }
 
 pub fn get_cli_status() -> Result<ClaudeCliStatus, ClaudeError> {
+    let default_cwd = env::current_dir()?.display().to_string();
     let Some(path) = find_executable(CLAUDE_BIN) else {
         return Ok(ClaudeCliStatus {
             available: false,
             version: None,
             path: None,
+            default_cwd,
             auth: ClaudeAuthStatus::logged_out(),
         });
     };
 
-    let version = command_output(&path, ["--version"]).ok();
-    let auth = read_auth_status(&path).unwrap_or_else(|_| ClaudeAuthStatus::logged_out());
+    let version = Some(command_output(&path, ["--version"])?);
+    let auth = read_auth_status(&path)?;
 
     Ok(ClaudeCliStatus {
         available: true,
         version,
         path: Some(path.display().to_string()),
+        default_cwd,
         auth,
     })
 }
@@ -146,12 +177,30 @@ pub fn start_login() -> Result<ClaudeLoginResult, ClaudeError> {
     let path = find_executable(CLAUDE_BIN).ok_or(ClaudeError::CliNotFound)?;
     let args = vec!["auth".to_owned(), "login".to_owned()];
     let command = display_command(&path, args.iter().map(String::as_str));
-    let child = spawn_interactive_command(&path, &args, &command)?;
+    let pid = spawn_interactive_command(&path, &args, &command)?;
 
-    Ok(ClaudeLoginResult {
-        command,
-        pid: child.id(),
-    })
+    Ok(ClaudeLoginResult { command, pid })
+}
+
+pub fn list_agent_views(
+    request: ClaudeAgentViewsRequest,
+) -> Result<Vec<ClaudeAgentView>, ClaudeError> {
+    let path = find_executable(CLAUDE_BIN).ok_or(ClaudeError::CliNotFound)?;
+    let cwd = resolve_working_directory(request.cwd)?;
+    let cwd_string = cwd.display().to_string();
+    let args = build_agent_view_list_args(&cwd_string);
+    let output = Command::new(path).args(&args).output()?;
+
+    if !output.status.success() {
+        let message = String::from_utf8_lossy(&output.stderr).trim().to_owned();
+        return Err(ClaudeError::CommandFailed(message));
+    }
+
+    parse_agent_views(&output.stdout)
+}
+
+fn parse_agent_views(output: &[u8]) -> Result<Vec<ClaudeAgentView>, ClaudeError> {
+    serde_json::from_slice(output).map_err(ClaudeError::Json)
 }
 
 pub fn launch_agent_view(request: ClaudeLaunchRequest) -> Result<ClaudeLaunchResult, ClaudeError> {
@@ -160,11 +209,11 @@ pub fn launch_agent_view(request: ClaudeLaunchRequest) -> Result<ClaudeLaunchRes
     let cwd_string = cwd.display().to_string();
     let args = build_agent_view_args(&cwd_string, request.mode);
     let command = display_command(&path, args.iter().map(String::as_str));
-    let child = spawn_interactive_command(&path, &args, &command)?;
+    let pid = spawn_interactive_command(&path, &args, &command)?;
 
     Ok(ClaudeLaunchResult {
         command,
-        pid: child.id(),
+        pid,
         mode: request.mode,
         cwd: cwd_string,
     })
@@ -183,16 +232,17 @@ fn read_auth_status(path: &Path) -> Result<ClaudeAuthStatus, ClaudeError> {
 
 fn command_output<const N: usize>(path: &Path, args: [&str; N]) -> Result<String, ClaudeError> {
     let output = Command::new(path).args(args).output()?;
+    if !output.status.success() {
+        let message = String::from_utf8_lossy(&output.stderr).trim().to_owned();
+        return Err(ClaudeError::CommandFailed(message));
+    }
     let stdout = String::from_utf8_lossy(&output.stdout).trim().to_owned();
 
     Ok(stdout)
 }
 
-fn resolve_working_directory(cwd: Option<String>) -> Result<PathBuf, ClaudeError> {
-    let path = match cwd {
-        Some(path) => PathBuf::from(path),
-        None => env::current_dir()?,
-    };
+fn resolve_working_directory(cwd: String) -> Result<PathBuf, ClaudeError> {
+    let path = PathBuf::from(cwd);
 
     if path.is_dir() {
         Ok(path)
@@ -213,8 +263,17 @@ fn build_agent_view_args(cwd: &str, mode: ClaudePermissionMode) -> Vec<String> {
     ]
 }
 
+fn build_agent_view_list_args(cwd: &str) -> Vec<String> {
+    vec![
+        "agents".to_owned(),
+        "--json".to_owned(),
+        "--cwd".to_owned(),
+        cwd.to_owned(),
+    ]
+}
+
 fn display_command<'a>(path: &Path, args: impl IntoIterator<Item = &'a str>) -> String {
-    let mut parts = vec![path.display().to_string()];
+    let mut parts = vec![shell_display_arg(&path.display().to_string())];
     parts.extend(args.into_iter().map(shell_display_arg));
     parts.join(" ")
 }
@@ -235,20 +294,30 @@ fn spawn_interactive_command(
     _path: &Path,
     _args: &[String],
     command: &str,
-) -> Result<std::process::Child, ClaudeError> {
-    Command::new("osascript")
+) -> Result<Option<u32>, ClaudeError> {
+    let output = Command::new("osascript")
         .arg("-e")
-        .arg("tell application \"Terminal\" to activate")
+        .arg("on run argv")
         .arg("-e")
-        .arg(format!(
-            "tell application \"Terminal\" to do script {}",
-            apple_script_string(command)
-        ))
+        .arg("tell application \"Terminal\"")
+        .arg("-e")
+        .arg("activate")
+        .arg("-e")
+        .arg("do script (item 1 of argv)")
+        .arg("-e")
+        .arg("end tell")
+        .arg("-e")
+        .arg("end run")
+        .arg(command)
         .stdin(Stdio::null())
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .spawn()
-        .map_err(ClaudeError::Io)
+        .output()?;
+
+    if !output.status.success() {
+        let message = String::from_utf8_lossy(&output.stderr).trim().to_owned();
+        return Err(ClaudeError::CommandFailed(message));
+    }
+
+    Ok(None)
 }
 
 #[cfg(not(target_os = "macos"))]
@@ -256,16 +325,12 @@ fn spawn_interactive_command(
     path: &Path,
     args: &[String],
     _command: &str,
-) -> Result<std::process::Child, ClaudeError> {
-    Command::new(path)
+) -> Result<Option<u32>, ClaudeError> {
+    let child = Command::new(path)
         .args(args)
         .spawn()
-        .map_err(ClaudeError::Io)
-}
-
-#[cfg(target_os = "macos")]
-fn apple_script_string(value: &str) -> String {
-    format!("\"{}\"", value.replace('\\', "\\\\").replace('"', "\\\""))
+        .map_err(ClaudeError::Io)?;
+    Ok(Some(child.id()))
 }
 
 fn find_executable(name: &str) -> Option<PathBuf> {
@@ -295,13 +360,13 @@ fn common_binary_directories() -> Vec<PathBuf> {
 
 fn executable_in_directory(directory: &Path, name: &str) -> Option<PathBuf> {
     let candidate = directory.join(name);
-    if candidate.is_file() {
+    if is_executable_file(&candidate) {
         return Some(candidate);
     }
 
     if cfg!(windows) {
         let candidate = directory.join(format!("{name}.exe"));
-        if candidate.is_file() {
+        if is_executable_file(&candidate) {
             return Some(candidate);
         }
     }
@@ -309,11 +374,23 @@ fn executable_in_directory(directory: &Path, name: &str) -> Option<PathBuf> {
     None
 }
 
+#[cfg(unix)]
+fn is_executable_file(path: &Path) -> bool {
+    path.metadata()
+        .map(|metadata| metadata.is_file() && metadata.permissions().mode() & 0o111 != 0)
+        .unwrap_or(false)
+}
+
+#[cfg(not(unix))]
+fn is_executable_file(path: &Path) -> bool {
+    path.is_file()
+}
+
 #[cfg(test)]
 mod tests {
     use super::{
-        apple_script_string, build_agent_view_args, display_command, shell_display_arg,
-        ClaudePermissionMode,
+        build_agent_view_args, build_agent_view_list_args, display_command, parse_agent_views,
+        shell_display_arg, ClaudeAgentView, ClaudePermissionMode,
     };
     use std::path::Path;
 
@@ -363,6 +440,14 @@ mod tests {
     }
 
     #[test]
+    fn builds_scoped_agent_view_list_args() {
+        assert_eq!(
+            build_agent_view_list_args("/workspace/agent-dock"),
+            vec!["agents", "--json", "--cwd", "/workspace/agent-dock"]
+        );
+    }
+
+    #[test]
     fn quotes_display_args_with_spaces() {
         assert_eq!(
             shell_display_arg("/workspace/agent dock"),
@@ -378,12 +463,65 @@ mod tests {
         );
     }
 
-    #[cfg(target_os = "macos")]
     #[test]
-    fn escapes_apple_script_strings() {
+    fn quotes_executable_path_with_spaces() {
         assert_eq!(
-            apple_script_string("/bin/claude agents --cwd \"agent dock\""),
-            "\"/bin/claude agents --cwd \\\"agent dock\\\"\""
+            display_command(
+                Path::new("/Applications/Claude Code/claude"),
+                ["auth", "login"]
+            ),
+            "'/Applications/Claude Code/claude' auth login"
+        );
+    }
+
+    #[test]
+    fn parses_active_agent_views() {
+        let output = br#"[
+          {
+            "pid": 13064,
+            "cwd": "/workspace/agent-dock",
+            "kind": "interactive",
+            "startedAt": 1783491256781,
+            "sessionId": "2d7ca220-a621-430f-a59d-831e554f9f56",
+            "status": "idle"
+          },
+          {
+            "id": "12b56049",
+            "cwd": "/workspace",
+            "kind": "background",
+            "startedAt": 1783905251124,
+            "sessionId": "12b56049-6b4c-4fcd-a961-1a31f51749ce",
+            "name": "review changes",
+            "state": "working"
+          }
+        ]"#;
+
+        assert_eq!(
+            parse_agent_views(output).expect("agent views should parse"),
+            vec![
+                ClaudeAgentView {
+                    id: None,
+                    session_id: Some("2d7ca220-a621-430f-a59d-831e554f9f56".to_owned()),
+                    pid: Some(13064),
+                    cwd: "/workspace/agent-dock".to_owned(),
+                    kind: "interactive".to_owned(),
+                    name: None,
+                    status: Some("idle".to_owned()),
+                    state: None,
+                    started_at: 1783491256781,
+                },
+                ClaudeAgentView {
+                    id: Some("12b56049".to_owned()),
+                    session_id: Some("12b56049-6b4c-4fcd-a961-1a31f51749ce".to_owned()),
+                    pid: None,
+                    cwd: "/workspace".to_owned(),
+                    kind: "background".to_owned(),
+                    name: Some("review changes".to_owned()),
+                    status: None,
+                    state: Some("working".to_owned()),
+                    started_at: 1783905251124,
+                },
+            ]
         );
     }
 }

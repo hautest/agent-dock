@@ -1,5 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import type {
+  ClaudeAgentView,
+  ClaudeAgentViewsRequest,
   ClaudeCliStatus,
   ClaudeLaunchRequest,
   ClaudeLaunchResult,
@@ -16,6 +18,7 @@ export function getClaudeCliStatus(): Promise<ClaudeCliStatus> {
       available: false,
       version: null,
       path: null,
+      defaultCwd: "",
       auth: {
         loggedIn: false,
         authMethod: null,
@@ -28,6 +31,14 @@ export function getClaudeCliStatus(): Promise<ClaudeCliStatus> {
   }
 
   return invoke<ClaudeCliStatus>("get_claude_cli_status");
+}
+
+export function listClaudeAgentViews(request: ClaudeAgentViewsRequest): Promise<ClaudeAgentView[]> {
+  if (!isTauriRuntime()) {
+    return Promise.resolve([]);
+  }
+
+  return invoke<ClaudeAgentView[]>("list_claude_agent_views", { request });
 }
 
 export function startClaudeLogin(): Promise<ClaudeLoginResult> {

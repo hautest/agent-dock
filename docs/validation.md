@@ -4,7 +4,9 @@
 
 프로젝트 루트에서 mise로 고정된 런타임을 사용한다.
 
-pnpm `11.7.0` 설치를 위해 현재 mise 릴리스를 사용한다.
+mise `2026.7.5` 이상을 사용한다.
+
+pnpm `11.7.0`은 mise npm backend로 설치한다.
 
 ```bash
 mise install
@@ -24,14 +26,16 @@ TypeScript 변경 후 가능한 경우 다음을 실행한다.
 pnpm lint:ts
 pnpm format:ts:check
 pnpm typecheck
+pnpm test
 pnpm build
 ```
 
-전체 lint와 format 검증은 루트에서 다음 명령으로 실행한다.
+전체 lint, format, test 검증은 루트에서 다음 명령으로 실행한다.
 
 ```bash
 pnpm lint
 pnpm format:check
+pnpm test
 ```
 
 ## Rust 검증

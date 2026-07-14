@@ -3,8 +3,12 @@ import type {
   ClaudeCliStatus,
   ClaudePermissionMode,
 } from "../../features/claude-code/types";
+import { css } from "../../../styled-system/css";
 import { styles } from "../app.styles";
 import type { StatusTone } from "./types";
+
+const statusLabelOk = css({ color: "status.success" });
+const statusLabelWarn = css({ color: "status.warning" });
 
 interface ClaudeContextPanelProps {
   auth: ClaudeAuthStatus | undefined;
@@ -23,7 +27,9 @@ export function ClaudeContextPanel({
     <aside className={`${styles.panel} ${styles.clippedPanel}`} aria-label="launch context">
       <div className={styles.panelHeader}>
         <span>context</span>
-        <span className={styles.statusLabel(authTone)}>{auth?.loggedIn ? "[AUTH]" : "[WAIT]"}</span>
+        <span className={authTone === "ok" ? statusLabelOk : statusLabelWarn}>
+          {auth?.loggedIn ? "[AUTH]" : "[WAIT]"}
+        </span>
       </div>
       <div className={styles.metricRow}>
         <span>mode</span>

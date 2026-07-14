@@ -1,6 +1,5 @@
 import { css } from "../../styled-system/css";
-
-const monoFont = "SFMono-Regular, Consolas, Liberation Mono, monospace";
+import { MONO_FONT } from "../shared/styles/typography";
 
 const sessionCard = css({
   background: "surface.subtle",
@@ -35,7 +34,7 @@ export const panelStyles = {
     borderBottom: "1px solid token(colors.border.subtle)",
     color: "fg.default",
     display: "flex",
-    fontFamily: monoFont,
+    fontFamily: MONO_FONT,
     fontSize: "0.78rem",
     justifyContent: "space-between",
     minHeight: "42px",
@@ -61,7 +60,7 @@ export const panelStyles = {
     borderRadius: "6px",
     color: "status.success",
     display: "grid",
-    fontFamily: monoFont,
+    fontFamily: MONO_FONT,
     height: "34px",
     placeItems: "center",
     width: "34px",
@@ -81,7 +80,7 @@ export const panelStyles = {
   sessionMeta: css({
     color: "status.success",
     display: "flex",
-    fontFamily: monoFont,
+    fontFamily: MONO_FONT,
     fontSize: "0.78rem",
     gap: "12px",
     gridColumn: "2",
@@ -105,7 +104,7 @@ export const panelStyles = {
 
     "& strong": {
       color: "fg.default",
-      fontFamily: monoFont,
+      fontFamily: MONO_FONT,
       fontSize: "0.82rem",
     },
   }),
@@ -119,7 +118,7 @@ export const panelStyles = {
     borderBottom: "1px solid token(colors.border.successSubtle)",
     color: "fg.muted",
     display: "flex",
-    fontFamily: monoFont,
+    fontFamily: MONO_FONT,
     fontSize: "0.76rem",
     gap: "12px",
     justifyContent: "space-between",

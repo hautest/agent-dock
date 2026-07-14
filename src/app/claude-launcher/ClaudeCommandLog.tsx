@@ -37,7 +37,7 @@ export function ClaudeCommandLog({
         </p>
         {operationResult ? (
           <p className={styles.terminalLine("ok")}>
-            <span>pid {operationResult.pid}</span>
+            <span>{operationResult.pid ? `pid ${operationResult.pid}` : "terminal"}</span>
             {operationResult.command}
           </p>
         ) : null}

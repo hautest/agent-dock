@@ -11,8 +11,8 @@
 * TypeScript lint는 oxlint로 실행한다.
 * TypeScript와 루트 설정 format은 oxfmt로 실행한다.
 * Rust lint와 format은 cargo clippy와 cargo fmt로 실행한다.
-* mise로 Node.js, pnpm, Rust 버전을 프로젝트 루트에서 정확히 고정한다.
-* pnpm `11.7.0` 설치를 지원하는 현재 mise 릴리스를 사용한다.
+* mise에 명시한 Node.js, pnpm, Rust 버전을 프로젝트 루트의 실행 버전으로 사용한다.
+* mise `2026.7.5` 이상에서 pnpm을 npm backend로 `11.7.0` 설치한다.
 * 로컬에서 Tauri dev app을 실행할 수 있는 상태를 목표로 한다.
 * Frontend와 Rust backend의 기본 진입점을 만든다.
 * 기본 검증 명령을 package script와 문서에 맞춘다.
@@ -50,11 +50,11 @@
 
 ## Acceptance Criteria
 
-* mise가 프로젝트 루트에서 Node.js `24.7.0`, pnpm `11.7.0`, Rust `1.96.0`을 활성화한다.
+* mise `2026.7.5` 이상이 프로젝트 루트에서 Node.js `24.7.0`, npm backend의 pnpm `11.7.0`, Rust `1.96.0`을 활성화한다.
 * pnpm 의존성이 설치된다.
 * `pnpm dev`로 Vite dev server를 실행할 수 있다.
 * `pnpm tauri dev`로 Tauri dev app을 실행할 수 있다.
-* `pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm build`, `cd src-tauri && cargo check`, `cd src-tauri && cargo test`가 실행 가능한 상태다.
+* `pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm build`, `cd src-tauri && cargo check`, `cd src-tauri && cargo test`가 실행 가능한 상태다.
 * 검증 명령은 `docs/validation.md`와 package scripts가 서로 일치한다.
 
 ## 검증 방법
@@ -68,6 +68,7 @@ cargo --version
 pnpm lint
 pnpm format:check
 pnpm typecheck
+pnpm test
 pnpm build
 cd src-tauri
 cargo check
