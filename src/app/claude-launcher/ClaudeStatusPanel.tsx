@@ -1,8 +1,62 @@
 import { css } from "../../../styled-system/css";
 import type { ClaudeCliStatus } from "../../features/claude-code/types";
 import { MONO_FONT } from "../../shared/styles/typography";
-import { styles } from "../app.styles";
+import { ClaudePanel, ClaudePanelHeader } from "./ClaudePanel";
 import type { StatusTone } from "./types";
+
+interface ClaudeStatusPanelProps {
+  loading: boolean;
+  status: ClaudeCliStatus;
+  statusTone: StatusTone;
+  onRefresh: () => void;
+}
+
+export function ClaudeStatusPanel({
+  loading,
+  status,
+  statusTone,
+  onRefresh,
+}: ClaudeStatusPanelProps) {
+  const auth = status.auth;
+
+  return (
+    <ClaudePanel as="aside" className={clippedPanel} aria-label="claude status">
+      <ClaudePanelHeader>
+        <span>claude</span>
+        <span className={statusTone === "ok" ? statusLabelOk : statusLabelWarn}>
+          {status.available ? "[OK]" : "[MISS]"}
+        </span>
+      </ClaudePanelHeader>
+      <div className={stack}>
+        <div className={metricBlock}>
+          <span>cli path</span>
+          <strong>{status.path ?? "not found"}</strong>
+        </div>
+        <div className={metricBlock}>
+          <span>version</span>
+          <strong>{status.version ?? "unknown"}</strong>
+        </div>
+        <div className={metricBlock}>
+          <span>auth</span>
+          <strong>{auth.loggedIn ? (auth.email ?? "logged in") : "login required"}</strong>
+        </div>
+        <button className={refreshButton} disabled={loading} onClick={onRefresh} type="button">
+          refresh status
+        </button>
+      </div>
+    </ClaudePanel>
+  );
+}
+
+const clippedPanel = css({
+  overflow: "hidden",
+});
+
+const stack = css({
+  display: "grid",
+  gap: "10px",
+  padding: "14px",
+});
 
 const metricBlock = css({
   border: "1px solid token(colors.border.neutralSubtle)",
@@ -45,47 +99,3 @@ const refreshButton = css({
     opacity: "0.5",
   },
 });
-
-interface ClaudeStatusPanelProps {
-  loading: boolean;
-  status: ClaudeCliStatus;
-  statusTone: StatusTone;
-  onRefresh: () => void;
-}
-
-export function ClaudeStatusPanel({
-  loading,
-  status,
-  statusTone,
-  onRefresh,
-}: ClaudeStatusPanelProps) {
-  const auth = status.auth;
-
-  return (
-    <aside className={`${styles.panel} ${styles.clippedPanel}`} aria-label="claude status">
-      <div className={styles.panelHeader}>
-        <span>claude</span>
-        <span className={statusTone === "ok" ? statusLabelOk : statusLabelWarn}>
-          {status.available ? "[OK]" : "[MISS]"}
-        </span>
-      </div>
-      <div className={styles.stack}>
-        <div className={metricBlock}>
-          <span>cli path</span>
-          <strong>{status.path ?? "not found"}</strong>
-        </div>
-        <div className={metricBlock}>
-          <span>version</span>
-          <strong>{status.version ?? "unknown"}</strong>
-        </div>
-        <div className={metricBlock}>
-          <span>auth</span>
-          <strong>{auth.loggedIn ? (auth.email ?? "logged in") : "login required"}</strong>
-        </div>
-        <button className={refreshButton} disabled={loading} onClick={onRefresh} type="button">
-          refresh status
-        </button>
-      </div>
-    </aside>
-  );
-}

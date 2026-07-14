@@ -7,48 +7,6 @@ import { claudeCliStatusQueryOptions } from "../../features/claude-code/claude-c
 import { MONO_FONT } from "../../shared/styles/typography";
 import { ClaudeDialog } from "./ClaudeDialog";
 
-const body = css({
-  display: "grid",
-  gap: "16px",
-  padding: "16px",
-});
-
-const copy = css({
-  color: "fg.muted",
-  fontFamily: MONO_FONT,
-  fontSize: "0.82rem",
-  lineHeight: "1.6",
-  margin: "0",
-});
-
-const actions = css({
-  display: "flex",
-  flexWrap: "wrap",
-  gap: "10px",
-});
-
-const button = css({
-  background: "surface.subtle",
-  border: "1px solid token(colors.border.neutral)",
-  borderRadius: "7px",
-  color: "fg.default",
-  cursor: "pointer",
-  fontFamily: MONO_FONT,
-  fontSize: "0.78rem",
-  minHeight: "38px",
-  paddingInline: "13px",
-
-  _disabled: {
-    cursor: "not-allowed",
-    opacity: "0.5",
-  },
-
-  _hover: {
-    borderColor: "border.success",
-    color: "status.success",
-  },
-});
-
 interface ClaudeLoginModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -105,3 +63,45 @@ export function ClaudeLoginModal({ isOpen, onClose }: ClaudeLoginModalProps) {
     </ClaudeDialog>
   );
 }
+
+const body = css({
+  display: "grid",
+  gap: "16px",
+  padding: "16px",
+});
+
+const copy = css({
+  color: "fg.muted",
+  fontFamily: MONO_FONT,
+  fontSize: "0.82rem",
+  lineHeight: "1.6",
+  margin: "0",
+});
+
+const actions = css({
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "10px",
+});
+
+const button = css({
+  background: "surface.subtle",
+  border: "1px solid token(colors.border.neutral)",
+  borderRadius: "7px",
+  color: "fg.default",
+  cursor: "pointer",
+  fontFamily: MONO_FONT,
+  fontSize: "0.78rem",
+  minHeight: "38px",
+  paddingInline: "13px",
+
+  _disabled: {
+    cursor: "not-allowed",
+    opacity: "0.5",
+  },
+
+  _hover: {
+    borderColor: "border.success",
+    color: "status.success",
+  },
+});

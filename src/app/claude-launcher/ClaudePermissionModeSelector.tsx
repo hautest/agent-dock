@@ -3,6 +3,40 @@ import type { ClaudePermissionMode } from "../../features/claude-code/types";
 import { MONO_FONT } from "../../shared/styles/typography";
 import { permissionModes } from "./permission-modes";
 
+interface ClaudePermissionModeSelectorProps {
+  selectedMode: ClaudePermissionMode;
+  onModeChange: (mode: ClaudePermissionMode) => void;
+}
+
+export function ClaudePermissionModeSelector({
+  selectedMode,
+  onModeChange,
+}: ClaudePermissionModeSelectorProps) {
+  return (
+    <div className={grid} aria-label="permission mode">
+      {permissionModes.map((mode) => {
+        const classes = [button];
+        if (selectedMode === mode.value) classes.push(activeButton);
+        if (mode.danger) classes.push(dangerButton);
+
+        return (
+          <button
+            aria-pressed={selectedMode === mode.value}
+            className={classes.join(" ")}
+            key={mode.value}
+            onClick={() => onModeChange(mode.value)}
+            type="button"
+          >
+            <span>{mode.status}</span>
+            <strong>{mode.label}</strong>
+            <small>{mode.description}</small>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 const grid = css({
   display: "grid",
   gap: "10px",
@@ -52,37 +86,3 @@ const dangerButton = css({
     color: "status.danger",
   },
 });
-
-interface ClaudePermissionModeSelectorProps {
-  selectedMode: ClaudePermissionMode;
-  onModeChange: (mode: ClaudePermissionMode) => void;
-}
-
-export function ClaudePermissionModeSelector({
-  selectedMode,
-  onModeChange,
-}: ClaudePermissionModeSelectorProps) {
-  return (
-    <div className={grid} aria-label="permission mode">
-      {permissionModes.map((mode) => {
-        const classes = [button];
-        if (selectedMode === mode.value) classes.push(activeButton);
-        if (mode.danger) classes.push(dangerButton);
-
-        return (
-          <button
-            aria-pressed={selectedMode === mode.value}
-            className={classes.join(" ")}
-            key={mode.value}
-            onClick={() => onModeChange(mode.value)}
-            type="button"
-          >
-            <span>{mode.status}</span>
-            <strong>{mode.label}</strong>
-            <small>{mode.description}</small>
-          </button>
-        );
-      })}
-    </div>
-  );
-}

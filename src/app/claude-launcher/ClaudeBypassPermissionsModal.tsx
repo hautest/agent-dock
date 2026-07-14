@@ -2,6 +2,39 @@ import { css } from "../../../styled-system/css";
 import { MONO_FONT } from "../../shared/styles/typography";
 import { ClaudeDialog } from "./ClaudeDialog";
 
+interface ClaudeBypassPermissionsModalProps {
+  cwd: string;
+  isOpen: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+}
+
+export function ClaudeBypassPermissionsModal({
+  cwd,
+  isOpen,
+  onCancel,
+  onConfirm,
+}: ClaudeBypassPermissionsModalProps) {
+  return (
+    <ClaudeDialog isOpen={isOpen} onClose={onCancel} title="confirm bypass permissions">
+      <div className={body}>
+        <p className={warning}>
+          {cwd}에서 Claude Code permission prompt를 건너뛰고 실행한다. 이 경로와 실행 모드를 다시
+          확인한다.
+        </p>
+        <div className={actions}>
+          <button className={button} onClick={onCancel} type="button">
+            cancel
+          </button>
+          <button className={`${button} ${dangerButton}`} onClick={onConfirm} type="button">
+            confirm launch
+          </button>
+        </div>
+      </div>
+    </ClaudeDialog>
+  );
+}
+
 const body = css({
   display: "grid",
   gap: "16px",
@@ -46,36 +79,3 @@ const dangerButton = css({
     color: "status.danger",
   },
 });
-
-interface ClaudeBypassPermissionsModalProps {
-  cwd: string;
-  isOpen: boolean;
-  onCancel: () => void;
-  onConfirm: () => void;
-}
-
-export function ClaudeBypassPermissionsModal({
-  cwd,
-  isOpen,
-  onCancel,
-  onConfirm,
-}: ClaudeBypassPermissionsModalProps) {
-  return (
-    <ClaudeDialog isOpen={isOpen} onClose={onCancel} title="confirm bypass permissions">
-      <div className={body}>
-        <p className={warning}>
-          {cwd}에서 Claude Code permission prompt를 건너뛰고 실행한다. 이 경로와 실행 모드를 다시
-          확인한다.
-        </p>
-        <div className={actions}>
-          <button className={button} onClick={onCancel} type="button">
-            cancel
-          </button>
-          <button className={`${button} ${dangerButton}`} onClick={onConfirm} type="button">
-            confirm launch
-          </button>
-        </div>
-      </div>
-    </ClaudeDialog>
-  );
-}

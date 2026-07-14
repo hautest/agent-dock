@@ -16,7 +16,8 @@ Agent Dock에서 Claude Code CLI를 기본 agent view로 실행할 수 있게 �
 * Frontend server state는 TanStack Query와 Suspensive로 관리한다.
 * launcher 전역 상태는 Jotai로 관리한다.
 * 로그인과 위험 실행 확인 modal은 overlay-kit으로 관리한다.
-* 컴포넌트 전용 Panda CSS 선언은 해당 컴포넌트 파일에 둔다.
+* 컴포넌트 전용 Panda CSS 선언은 해당 컴포넌트 파일의 컴포넌트와 로직 아래에 둔다.
+* launcher가 공유하는 패널 시각 패턴은 공용 패널 컴포넌트와 같은 파일에서 관리한다.
 
 ## 제외 범위
 
@@ -116,6 +117,8 @@ Agent Dock에서 Claude Code CLI를 기본 agent view로 실행할 수 있게 �
 * server state는 TanStack Query와 Suspensive 경계에서 조회하고 갱신한다.
 * permission mode, repo 경로, 최근 실행 결과는 Jotai atom으로 관리한다.
 * 로그인과 권한 전부 허용 확인 modal은 overlay-kit으로 연다.
+* Claude launcher 컴포넌트의 Panda CSS 선언은 컴포넌트와 로직 다음의 파일 하단에 위치한다.
+* 공유 패널 스타일은 공용 패널 컴포넌트 파일의 컴포넌트 선언 아래에 위치한다.
 * `pnpm lint:ts`, `pnpm format:ts:check`, `pnpm typecheck`, `pnpm test`, `pnpm build`, Rust 검증 명령이 통과한다.
 
 ## 검증 방법

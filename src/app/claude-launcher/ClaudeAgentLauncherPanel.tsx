@@ -2,9 +2,96 @@ import { css } from "../../../styled-system/css";
 import { useEffect, useState } from "react";
 import type { ClaudePermissionMode } from "../../features/claude-code/types";
 import { MONO_FONT } from "../../shared/styles/typography";
-import { styles } from "../app.styles";
+import { ClaudeMuted, ClaudePanel, ClaudePanelHeader } from "./ClaudePanel";
 import { ClaudePermissionModeSelector } from "./ClaudePermissionModeSelector";
 import type { PermissionModeOption } from "./permission-modes";
+
+interface ClaudeAgentLauncherPanelProps {
+  agentLaunchDisabled: boolean;
+  cwd: string;
+  selectedMode: ClaudePermissionMode;
+  selectedModeOption: PermissionModeOption;
+  onCwdApply: (cwd: string) => void;
+  onLaunch: () => void;
+  onModeChange: (mode: ClaudePermissionMode) => void;
+  onOpenLogin: () => void;
+}
+
+export function ClaudeAgentLauncherPanel({
+  agentLaunchDisabled,
+  cwd,
+  selectedMode,
+  selectedModeOption,
+  onCwdApply,
+  onLaunch,
+  onModeChange,
+  onOpenLogin,
+}: ClaudeAgentLauncherPanelProps) {
+  const [draftCwd, setDraftCwd] = useState(cwd);
+
+  useEffect(() => {
+    setDraftCwd(cwd);
+  }, [cwd]);
+
+  return (
+    <ClaudePanel className={editorPanel} aria-label="agent launcher">
+      <ClaudePanelHeader>
+        <span>agent view</span>
+        <ClaudeMuted>test launcher</ClaudeMuted>
+      </ClaudePanelHeader>
+      <div className={body}>
+        <form
+          className={cwdForm}
+          onSubmit={(event) => {
+            event.preventDefault();
+            onCwdApply(draftCwd.trim());
+          }}
+        >
+          <label className={cwdLabel}>
+            repo path
+            <input
+              aria-label="repo path"
+              className={cwdInput}
+              onChange={(event) => setDraftCwd(event.currentTarget.value)}
+              spellCheck={false}
+              value={draftCwd}
+            />
+          </label>
+          <button className={`${button} ${secondaryButton}`} type="submit">
+            use repo
+          </button>
+        </form>
+
+        <ClaudePermissionModeSelector onModeChange={onModeChange} selectedMode={selectedMode} />
+
+        <div className={actions}>
+          <button
+            className={`${button} ${selectedModeOption.danger ? dangerButton : ""}`}
+            disabled={agentLaunchDisabled}
+            onClick={onLaunch}
+            type="button"
+          >
+            open agent view
+          </button>
+          <button className={`${button} ${secondaryButton}`} onClick={onOpenLogin} type="button">
+            login
+          </button>
+        </div>
+
+        {selectedModeOption.danger ? (
+          <p className={warningText}>
+            [DANGER] 이 모드는 Claude Code permission prompt를 건너뛰는 실행 모드다.
+          </p>
+        ) : null}
+      </div>
+    </ClaudePanel>
+  );
+}
+
+const editorPanel = css({
+  gridColumn: { base: "1", md: "1 / -1", lg: "auto" },
+  overflow: "hidden",
+});
 
 const body = css({
   display: "grid",
@@ -100,85 +187,3 @@ const warningText = css({
   margin: "0",
   paddingLeft: "12px",
 });
-
-interface ClaudeAgentLauncherPanelProps {
-  agentLaunchDisabled: boolean;
-  cwd: string;
-  selectedMode: ClaudePermissionMode;
-  selectedModeOption: PermissionModeOption;
-  onCwdApply: (cwd: string) => void;
-  onLaunch: () => void;
-  onModeChange: (mode: ClaudePermissionMode) => void;
-  onOpenLogin: () => void;
-}
-
-export function ClaudeAgentLauncherPanel({
-  agentLaunchDisabled,
-  cwd,
-  selectedMode,
-  selectedModeOption,
-  onCwdApply,
-  onLaunch,
-  onModeChange,
-  onOpenLogin,
-}: ClaudeAgentLauncherPanelProps) {
-  const [draftCwd, setDraftCwd] = useState(cwd);
-
-  useEffect(() => {
-    setDraftCwd(cwd);
-  }, [cwd]);
-
-  return (
-    <section className={`${styles.panel} ${styles.editorPanel}`} aria-label="agent launcher">
-      <div className={styles.panelHeader}>
-        <span>agent view</span>
-        <span className={styles.muted}>test launcher</span>
-      </div>
-      <div className={body}>
-        <form
-          className={cwdForm}
-          onSubmit={(event) => {
-            event.preventDefault();
-            onCwdApply(draftCwd.trim());
-          }}
-        >
-          <label className={cwdLabel}>
-            repo path
-            <input
-              aria-label="repo path"
-              className={cwdInput}
-              onChange={(event) => setDraftCwd(event.currentTarget.value)}
-              spellCheck={false}
-              value={draftCwd}
-            />
-          </label>
-          <button className={`${button} ${secondaryButton}`} type="submit">
-            use repo
-          </button>
-        </form>
-
-        <ClaudePermissionModeSelector onModeChange={onModeChange} selectedMode={selectedMode} />
-
-        <div className={actions}>
-          <button
-            className={`${button} ${selectedModeOption.danger ? dangerButton : ""}`}
-            disabled={agentLaunchDisabled}
-            onClick={onLaunch}
-            type="button"
-          >
-            open agent view
-          </button>
-          <button className={`${button} ${secondaryButton}`} onClick={onOpenLogin} type="button">
-            login
-          </button>
-        </div>
-
-        {selectedModeOption.danger ? (
-          <p className={warningText}>
-            [DANGER] 이 모드는 Claude Code permission prompt를 건너뛰는 실행 모드다.
-          </p>
-        ) : null}
-      </div>
-    </section>
-  );
-}

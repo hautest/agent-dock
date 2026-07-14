@@ -1,7 +1,77 @@
 import { css } from "../../../styled-system/css";
 import type { ClaudeAgentView } from "../../features/claude-code/types";
 import { MONO_FONT } from "../../shared/styles/typography";
-import { styles } from "../app.styles";
+import { ClaudeMuted, ClaudePanel, ClaudePanelHeader } from "./ClaudePanel";
+
+interface ClaudeAgentViewsPanelProps {
+  agentViews: ClaudeAgentView[];
+  loading: boolean;
+  onRefresh: () => void;
+}
+
+export function formatStartedAt(startedAt: number): string {
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(new Date(startedAt));
+}
+
+function agentViewKey(agentView: ClaudeAgentView): string {
+  return agentView.sessionId ?? agentView.id ?? `${agentView.cwd}:${agentView.startedAt}`;
+}
+
+export function ClaudeAgentViewsPanel({
+  agentViews,
+  loading,
+  onRefresh,
+}: ClaudeAgentViewsPanelProps) {
+  return (
+    <ClaudePanel className={panel} aria-label="active agent views">
+      <ClaudePanelHeader>
+        <span>active agent views</span>
+        <div className={headerActions}>
+          <ClaudeMuted>{agentViews.length} sessions</ClaudeMuted>
+          <button className={refreshButton} disabled={loading} onClick={onRefresh} type="button">
+            refresh
+          </button>
+        </div>
+      </ClaudePanelHeader>
+      {agentViews.length > 0 ? (
+        <div className={list}>
+          {agentViews.map((agentView) => {
+            const activity = agentView.state ?? agentView.status ?? "active";
+
+            return (
+              <article className={row} key={agentViewKey(agentView)}>
+                <div className={identity}>
+                  <span className={kind}>[{agentView.kind}]</span>
+                  <strong>{agentView.name ?? "Claude session"}</strong>
+                  <span className={`${state} ${activity === "blocked" ? blockedState : ""}`}>
+                    {activity}
+                  </span>
+                </div>
+                <span className={path} title={agentView.cwd}>
+                  {agentView.cwd}
+                </span>
+                <div className={meta}>
+                  <span>{agentView.id ?? agentView.sessionId?.slice(0, 8) ?? "no id"}</span>
+                  <span>{agentView.pid ? `pid ${agentView.pid}` : "managed"}</span>
+                  <time dateTime={new Date(agentView.startedAt).toISOString()}>
+                    {formatStartedAt(agentView.startedAt)}
+                  </time>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      ) : (
+        <p className={empty}>
+          {loading ? "reading claude agents" : "no active agent sessions reported"}
+        </p>
+      )}
+    </ClaudePanel>
+  );
+}
 
 const panel = css({
   gridColumn: "1 / -1",
@@ -107,73 +177,3 @@ const empty = css({
   margin: "0",
   padding: "18px 14px",
 });
-
-interface ClaudeAgentViewsPanelProps {
-  agentViews: ClaudeAgentView[];
-  loading: boolean;
-  onRefresh: () => void;
-}
-
-export function formatStartedAt(startedAt: number): string {
-  return new Intl.DateTimeFormat(undefined, {
-    dateStyle: "short",
-    timeStyle: "short",
-  }).format(new Date(startedAt));
-}
-
-function agentViewKey(agentView: ClaudeAgentView): string {
-  return agentView.sessionId ?? agentView.id ?? `${agentView.cwd}:${agentView.startedAt}`;
-}
-
-export function ClaudeAgentViewsPanel({
-  agentViews,
-  loading,
-  onRefresh,
-}: ClaudeAgentViewsPanelProps) {
-  return (
-    <section className={`${styles.panel} ${panel}`} aria-label="active agent views">
-      <div className={styles.panelHeader}>
-        <span>active agent views</span>
-        <div className={headerActions}>
-          <span className={styles.muted}>{agentViews.length} sessions</span>
-          <button className={refreshButton} disabled={loading} onClick={onRefresh} type="button">
-            refresh
-          </button>
-        </div>
-      </div>
-      {agentViews.length > 0 ? (
-        <div className={list}>
-          {agentViews.map((agentView) => {
-            const activity = agentView.state ?? agentView.status ?? "active";
-
-            return (
-              <article className={row} key={agentViewKey(agentView)}>
-                <div className={identity}>
-                  <span className={kind}>[{agentView.kind}]</span>
-                  <strong>{agentView.name ?? "Claude session"}</strong>
-                  <span className={`${state} ${activity === "blocked" ? blockedState : ""}`}>
-                    {activity}
-                  </span>
-                </div>
-                <span className={path} title={agentView.cwd}>
-                  {agentView.cwd}
-                </span>
-                <div className={meta}>
-                  <span>{agentView.id ?? agentView.sessionId?.slice(0, 8) ?? "no id"}</span>
-                  <span>{agentView.pid ? `pid ${agentView.pid}` : "managed"}</span>
-                  <time dateTime={new Date(agentView.startedAt).toISOString()}>
-                    {formatStartedAt(agentView.startedAt)}
-                  </time>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-      ) : (
-        <p className={empty}>
-          {loading ? "reading claude agents" : "no active agent sessions reported"}
-        </p>
-      )}
-    </section>
-  );
-}

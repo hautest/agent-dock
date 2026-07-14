@@ -1,40 +1,7 @@
 import { css } from "../../../styled-system/css";
 import { useEffect, useRef, type ReactNode } from "react";
 import { MONO_FONT } from "../../shared/styles/typography";
-import { styles } from "../app.styles";
-
-const dialog = css({
-  background:
-    "linear-gradient(180deg, token(colors.fill.panelTop), token(colors.fill.panelBottom)), token(colors.surface.default)",
-  border: "1px solid token(colors.border.success)",
-  borderRadius: "8px",
-  boxShadow: "0 26px 80px token(colors.effect.panelShadow)",
-  color: "fg.default",
-  margin: "auto",
-  maxWidth: "520px",
-  overflow: "hidden",
-  padding: "0",
-  width: "calc(100% - 36px)",
-
-  "&::backdrop": {
-    background: "rgba(0, 0, 0, 0.68)",
-  },
-});
-
-const closeButton = css({
-  background: "transparent",
-  border: "0",
-  color: "fg.muted",
-  cursor: "pointer",
-  fontFamily: MONO_FONT,
-  fontSize: "0.92rem",
-  minHeight: "32px",
-  minWidth: "32px",
-
-  _hover: {
-    color: "status.success",
-  },
-});
+import { ClaudePanelHeader } from "./ClaudePanel";
 
 interface ClaudeDialogProps {
   children: ReactNode;
@@ -81,13 +48,46 @@ export function ClaudeDialog({ children, isOpen, onClose, title }: ClaudeDialogP
       }}
       ref={dialogRef}
     >
-      <div className={styles.panelHeader}>
+      <ClaudePanelHeader>
         <span id="claude-dialog-title">{title}</span>
         <button aria-label="close" className={closeButton} onClick={onClose} type="button">
           x
         </button>
-      </div>
+      </ClaudePanelHeader>
       {children}
     </dialog>
   );
 }
+
+const dialog = css({
+  background:
+    "linear-gradient(180deg, token(colors.fill.panelTop), token(colors.fill.panelBottom)), token(colors.surface.default)",
+  border: "1px solid token(colors.border.success)",
+  borderRadius: "8px",
+  boxShadow: "0 26px 80px token(colors.effect.panelShadow)",
+  color: "fg.default",
+  margin: "auto",
+  maxWidth: "520px",
+  overflow: "hidden",
+  padding: "0",
+  width: "calc(100% - 36px)",
+
+  "&::backdrop": {
+    background: "rgba(0, 0, 0, 0.68)",
+  },
+});
+
+const closeButton = css({
+  background: "transparent",
+  border: "0",
+  color: "fg.muted",
+  cursor: "pointer",
+  fontFamily: MONO_FONT,
+  fontSize: "0.92rem",
+  minHeight: "32px",
+  minWidth: "32px",
+
+  _hover: {
+    color: "status.success",
+  },
+});
